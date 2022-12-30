@@ -8,15 +8,13 @@ import ru.practicum.exploreWithMe.model.Event;
 import ru.practicum.exploreWithMe.model.dto.*;
 import ru.practicum.exploreWithMe.repository.RequestRepository;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-
 @Component
 @RequiredArgsConstructor
 public class EventMapper {
     private final RequestRepository requestRepository;
     private final RestTemplate restTemplate = new RestTemplate();
     private static final String STAT_URL = "http://localhost:9090";
+
     public EventDto toDto(Event event) {
         EventDto eventDto = new EventDto();
 
@@ -42,7 +40,7 @@ public class EventMapper {
         return eventDto;
     }
 
-    public EventAdmDto toAdmDto(Event event){
+    public EventAdmDto toAdmDto(Event event) {
         EventAdmDto eventDto = new EventAdmDto();
 
         eventDto.setId(event.getId());
@@ -89,7 +87,7 @@ public class EventMapper {
         return event;
     }
 
-    public EventShortDto toShortDto(Event event){
+    public EventShortDto toShortDto(Event event) {
         EventShortDto eventShortDto = new EventShortDto();
         eventShortDto.setId(event.getId());
         eventShortDto.setAnnotation(event.getAnnotation());
@@ -100,10 +98,10 @@ public class EventMapper {
         eventShortDto.setInitiator(event.getInitiator());
         eventShortDto.setConfirmedRequests(requestRepository.getCountConfirmed(event.getId()));
         eventShortDto.setViews(getViews(event.getId()));
-        return  eventShortDto;
+        return eventShortDto;
     }
 
-    public EventUserDto toUserDto(Event event){
+    public EventUserDto toUserDto(Event event) {
         EventUserDto eventDto = new EventUserDto();
 
         eventDto.setId(event.getId());
@@ -128,7 +126,7 @@ public class EventMapper {
         return eventDto;
     }
 
-    public Event toEventFromNewDto(EventNewDto eventNewDto){
+    public Event toEventFromNewDto(EventNewDto eventNewDto) {
         Event event = new Event();
 
         Category category = new Category();
@@ -149,7 +147,7 @@ public class EventMapper {
         return event;
     }
 
-    public EventFullDto toFullDto(Event event){
+    public EventFullDto toFullDto(Event event) {
         EventFullDto eventDto = new EventFullDto();
         eventDto.setId(event.getId());
         eventDto.setAnnotation(event.getAnnotation());
@@ -176,10 +174,12 @@ public class EventMapper {
     private Integer getViews(Integer eventId) {
         ViewStatsDto[] views = restTemplate.getForObject(STAT_URL + "/stats?uris=/events/"
                 + eventId.toString(), ViewStatsDto[].class);
-        if(views.length > 0) {
-            return views[0].getHits().intValue();
-        } else {
-            return null;
+        if (views != null) {
+            if (views.length > 0) {
+                return views[0].getHits().intValue();
+            }
         }
+        return null;
+
     }
 }

@@ -21,6 +21,7 @@ public interface EventService {
                                       HitDto hitDto);
 
     Event getById(Integer id, HitDto hitDto);
+
     Event getById(Integer id);
 
     Collection<Event> getByUser(Integer id, Integer from, Integer size);

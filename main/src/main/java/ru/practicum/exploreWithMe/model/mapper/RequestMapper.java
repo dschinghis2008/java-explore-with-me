@@ -13,7 +13,8 @@ public class RequestMapper {
 
     private final UserService userService;
     private final EventService eventService;
-    public RequestDto toDto(Request request){
+
+    public RequestDto toDto(Request request) {
         RequestDto requestDto = new RequestDto();
         requestDto.setId(request.getId());
         requestDto.setCreated(request.getCreated());
@@ -23,7 +24,7 @@ public class RequestMapper {
         return requestDto;
     }
 
-    public Request toRequest(RequestDto requestDto){
+    public Request toRequest(RequestDto requestDto) {
         Request request = new Request();
         request.setId(requestDto.getId());
         request.setCreated(requestDto.getCreated());

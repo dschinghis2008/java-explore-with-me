@@ -43,10 +43,10 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event add(Integer userId, Event event) {
-        event.setInitiator(userRepository.findById(userId).
-                orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND)));
-        event.setCategory(categoryRepository.findById(event.getCategory().getId()).
-                orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND)));
+        event.setInitiator(userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND)));
+        event.setCategory(categoryRepository.findById(event.getCategory().getId())
+                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND)));
         if (event.getAnnotation() == null || event.getDescription() == null) {
             throw new InvalidDataException(HttpStatus.BAD_REQUEST);
         }
@@ -60,8 +60,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event publish(Integer eventId) {
-        Event event = eventRepository.findById(eventId).
-                orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         event.setPublishedOn(LocalDateTime.now().withNano(0));
         if (event.getState().equals(State.PENDING) &&
                 checkDiffTime(event.getPublishedOn(), event.getEventDate(), 1)) {
@@ -75,8 +75,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event reject(Integer eventId) {
-        Event event = eventRepository.findById(eventId).
-                orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         if (event.getState().equals(State.PENDING)) {
             event.setState(State.CANCELED);
             log.info("-----=====>>> rejected event id=/{}/", eventId);

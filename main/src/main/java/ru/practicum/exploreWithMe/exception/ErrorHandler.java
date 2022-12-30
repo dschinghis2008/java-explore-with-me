@@ -12,19 +12,19 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorBody handleBadRequest(InvalidDataException e){
+    public ErrorBody handleBadRequest(InvalidDataException e) {
         return new ErrorBody(e.getStatus(), List.of("error on try add / update entity"));
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorBody handleNotFound(NotFoundException e){
+    public ErrorBody handleNotFound(NotFoundException e) {
         return new ErrorBody(e.getStatus(), List.of("data not found"));
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorBody handleConflict(ConflictException e){
+    public ErrorBody handleConflict(ConflictException e) {
         return new ErrorBody(e.getStatus(), List.of("conflict data unique"));
     }
 }

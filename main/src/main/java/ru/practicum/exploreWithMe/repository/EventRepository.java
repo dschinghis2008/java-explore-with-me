@@ -34,12 +34,13 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
     @Query("select e from Event e where (lower(e.annotation) like concat('%', lower(:text), '%') " +
             "or lower(e.description) like concat('%', lower(:text), '%')) and e.paid = :paid")
     Page<Event> getEventsPublicByDescrAndPaid(String text, Boolean paid, Pageable pageable);
+
     @Query("select e from Event e where e.state='PUBLISHED' and e.eventDate between :dt1 and :dt2 " +
             "and e.paid = :paid " +
             "and (lower(e.annotation) like concat('%', lower(:text), '%') " +
             "or lower(e.description) like concat('%', lower(:text), '%')) order by e.id")
     Page<Event> getEventsPublicAllCategSortByDate(String text, Boolean paid,
-                                LocalDateTime dt1, LocalDateTime dt2, Pageable pageable);
+                                                  LocalDateTime dt1, LocalDateTime dt2, Pageable pageable);
 
     @Query("select e from Event e where e.state='PUBLISHED' and e.eventDate between :dt1 and :dt2 and e.paid=:paid" +
             " order by e.id")

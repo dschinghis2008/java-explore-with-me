@@ -17,6 +17,7 @@ import java.util.Collection;
 @Slf4j
 public class CompilationMapper {
     private final EventService eventService;
+
     public CompilationDto toDto(Compilation compilation) {
         CompilationDto compilationDto = new CompilationDto();
         compilationDto.setId(compilation.getId());
@@ -32,7 +33,7 @@ public class CompilationMapper {
         compilation.setTitle(compilationDto.getTitle());
         compilation.setPinned(compilationDto.getPinned());
         Collection<Event> events = new ArrayList<>();
-        for(Integer id : compilationDto.getEvents()){
+        for (Integer id : compilationDto.getEvents()) {
             log.info("====>>>> COMP_MAPPER add Event id=/{}/, getEvents=/{}/", id, compilation.getEvents());
             events.add(eventService.getById(id));
         }

@@ -9,6 +9,7 @@ import java.util.Collection;
 public class ErrorBody {
     private final Integer status;
     private final Collection<String> errors;
+
     public ErrorBody(HttpStatus httpStatus, Collection<String> errors) {
         this.status = httpStatus.value();
         this.errors = errors;

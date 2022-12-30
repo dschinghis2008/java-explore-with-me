@@ -7,7 +7,9 @@ import java.util.Collection;
 public interface RequestService {
 
     Request add(Integer userId, Integer eventId);
+
     Request cancel(Integer userId, Integer requestId);
+
     Collection<Request> getAll(Integer requesterId);
 
     Collection<Request> getAllOfAuthor(Integer userId, Integer eventId);

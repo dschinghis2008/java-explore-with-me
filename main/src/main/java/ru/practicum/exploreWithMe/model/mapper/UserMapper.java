@@ -6,7 +6,7 @@ import ru.practicum.exploreWithMe.model.dto.UserDto;
 
 @Service
 public class UserMapper {
-    public UserDto toDto(User user){
+    public UserDto toDto(User user) {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setEmail(user.getEmail());
@@ -14,9 +14,9 @@ public class UserMapper {
         return userDto;
     }
 
-    public User toUser(UserDto userDto){
+    public User toUser(UserDto userDto) {
         User user = new User();
-        if(userDto.getId() != null){
+        if (userDto.getId() != null) {
             user.setId(userDto.getId());
         }
 
