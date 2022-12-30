@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Mapper {
-    public EndpointHit toEndpoitHit(EndpointHitDto endpointHitDto){
+    public EndpointHit toEndpoitHit(EndpointHitDto endpointHitDto) {
         EndpointHit endpointHit = new EndpointHit();
         endpointHit.setApp(endpointHitDto.getApp());
         endpointHit.setUri(endpointHitDto.getUri());
@@ -13,7 +13,7 @@ public class Mapper {
         return endpointHit;
     }
 
-    public EndpointHitDto toDto(EndpointHit endpointHit){
+    public EndpointHitDto toDto(EndpointHit endpointHit) {
         EndpointHitDto dto = new EndpointHitDto();
         dto.setApp(endpointHit.getApp());
         dto.setUri(endpointHit.getUri());

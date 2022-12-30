@@ -13,7 +13,7 @@ public class ViewStats {
     private String uri;
 
 
-    public ViewStats(Long hits, String app, String uri ) {
+    public ViewStats(Long hits, String app, String uri) {
         this.app = app;
         this.uri = uri;
         this.hits = hits;
