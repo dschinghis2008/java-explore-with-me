@@ -14,11 +14,7 @@
 	<packaging>pom</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<name>explore-with-me</name>
-	<modules>
-		<module>stats</module>
-		<module>main</module>
-	</modules>
+
 
 	<name>Explore With Me</name>
 	<modules>
