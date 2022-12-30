@@ -28,8 +28,8 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public Request add(Integer userId, Integer eventId) {
-        User user = userRepository.findById(userId).
-                orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
         if (Objects.equals(event.getInitiator().getId(), userId)) {
