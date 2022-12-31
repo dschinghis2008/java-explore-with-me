@@ -35,8 +35,8 @@ services:
   ewm-db:
     image: postgres:14-alpine
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
-      - POSTGRES_DB=ewm-main
-      - POSTGRES_USER=ewm_admin
-      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=ewm
+      - POSTGRES_USER=ewm
+      - POSTGRES_PASSWORD=ewm
