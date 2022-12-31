@@ -35,7 +35,7 @@ public class EventServiceImpl implements EventService {
     private final CategoryRepository categoryRepository;
 
     private final RestTemplate restTemplate = new RestTemplate();
-    private static final String STAT_URL = "http://localhost:9090";
+    private static final String STAT_URL = "http://127.0.0.1:9090";
 
     private Boolean checkDiffTime(LocalDateTime dt1, LocalDateTime dt2, Integer diff) {
         return (dt2.minusHours(diff).isAfter(dt1) || dt2.minusHours(diff).isEqual(dt1));
