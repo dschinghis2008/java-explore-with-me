@@ -88,7 +88,6 @@ public class EventController {
         LocalDateTime dtEnd = null;
         if (!(rangeStart == null && rangeEnd == null)) {
             DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            assert rangeStart != null;
             dtStart = LocalDateTime.parse(rangeStart, f);
             dtEnd = LocalDateTime.parse(rangeEnd, f);
         }

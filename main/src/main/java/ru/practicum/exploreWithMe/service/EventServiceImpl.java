@@ -1,7 +1,7 @@
 package ru.practicum.exploreWithMe.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
@@ -27,7 +27,7 @@ import java.util.Objects;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
@@ -35,7 +35,16 @@ public class EventServiceImpl implements EventService {
     private final CategoryRepository categoryRepository;
 
     private final RestTemplate restTemplate = new RestTemplate();
-    private static final String STAT_URL = "http://localhost:9090";
+
+    private final String statUrl;
+
+    public EventServiceImpl(EventRepository eventRepository, UserRepository userRepository,
+                            CategoryRepository categoryRepository, @Value("${stats-server.url}") String statUrl) {
+        this.eventRepository = eventRepository;
+        this.userRepository = userRepository;
+        this.categoryRepository = categoryRepository;
+        this.statUrl = statUrl;
+    }
 
     private Boolean checkDiffTime(LocalDateTime dt1, LocalDateTime dt2, Integer diff) {
         return (dt2.minusHours(diff).isAfter(dt1) || dt2.minusHours(diff).isEqual(dt1));
@@ -116,7 +125,10 @@ public class EventServiceImpl implements EventService {
         Pageable pageable = PageRequest.of(from, size);
         log.info("----=====>>>>EVENTSERV Public query events");
         Collection<Event> result = new ArrayList<>();
-        if (dt1 == null && dt2 == null && sort == null) {
+        if (text == null && category == null && paid == null && dt1 == null && dt2 == null && sort == null) {
+            result = eventRepository.getPublicAll(pageable).getContent();
+        }
+        if (dt1 == null && dt2 == null && sort == null && paid != null) {
             result = eventRepository.getEventsPublicByDescrAndPaid(text, paid, pageable).getContent();
         }
         if (category == null && dt1 != null && dt2 != null && sort.equals("EVENT_DATE")) {
@@ -124,7 +136,7 @@ public class EventServiceImpl implements EventService {
                     text, category, paid, dt1, dt2, from, size);
             result = eventRepository.getEventsPublicAllCategSortByDate(text, paid,
                     dt1, dt2, pageable).getContent();
-        } else if (category == null && text.equals("0") && dt1 != null && dt2 != null) {
+        } else if (category == null && Objects.equals(text, "0") && dt1 != null && dt2 != null) {
             log.info("---===>>>EVENTSERV text=/{}/,categ=/{}/,paid=/{}/,dt1=/{}/,dt2=/{}/,from=/{}/,size=/{}/",
                     text, category, paid, dt1, dt2, from, size);
             result = eventRepository.getEventsPublicAllWithDate(paid, dt1, dt2, pageable).getContent();
@@ -220,7 +232,7 @@ public class EventServiceImpl implements EventService {
     }
 
     private void addToStatistic(HitDto hitDto) {
-        String url = STAT_URL + "/hit";
+        String url =  statUrl + "/hit";
         log.info("---===>>>EVENTSERV hitDto=/{}/, url=/{}/", hitDto, url);
         HttpEntity<HitDto> request = new HttpEntity<>(hitDto);
         restTemplate.postForObject(url, request, HitDto.class);

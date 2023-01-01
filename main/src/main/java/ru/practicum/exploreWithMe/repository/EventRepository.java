@@ -27,7 +27,7 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
     @Query("select e from Event e where e.state='PUBLISHED' and e.eventDate between :dt1 and :dt2 " +
             "and e.category in :category and e.paid = :paid " +
             "and (lower(e.annotation) like concat('%', lower(:text), '%') " +
-            "or lower(e.description) like concat('%', lower(:text), '%')) order by e.eventDate")
+            "or lower(e.description) like concat('%', lower(:text), '%')) order by e.id desc")
     Page<Event> getEventsPublic(String text, Integer[] category, Boolean paid,
                                 LocalDateTime dt1, LocalDateTime dt2, Pageable pageable);
 
@@ -38,13 +38,16 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
     @Query("select e from Event e where e.state='PUBLISHED' and e.eventDate between :dt1 and :dt2 " +
             "and e.paid = :paid " +
             "and (lower(e.annotation) like concat('%', lower(:text), '%') " +
-            "or lower(e.description) like concat('%', lower(:text), '%')) order by e.id")
+            "or lower(e.description) like concat('%', lower(:text), '%')) order by e.id desc")
     Page<Event> getEventsPublicAllCategSortByDate(String text, Boolean paid,
                                                   LocalDateTime dt1, LocalDateTime dt2, Pageable pageable);
 
     @Query("select e from Event e where e.state='PUBLISHED' and e.eventDate between :dt1 and :dt2 and e.paid=:paid" +
-            " order by e.id")
+            " order by e.id desc")
     Page<Event> getEventsPublicAllWithDate(Boolean paid, LocalDateTime dt1, LocalDateTime dt2, Pageable pageable);
+
+    @Query("select e from Event e where e.state='PUBLISHED' order by e.eventDate")
+    Page<Event> getPublicAll(Pageable pageable);
 
     Page<Event> findAllByInitiatorId(Integer id, Pageable pageable);
 

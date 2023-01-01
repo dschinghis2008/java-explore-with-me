@@ -14,7 +14,7 @@ services:
   stats-db:
     image: postgres:14-alpine
     ports:
-      - "5432:5432"
+      - "5434:5432"
     environment:
       - POSTGRES_DB=ewm-stat
       - POSTGRES_USER=ewm
@@ -29,8 +29,8 @@ services:
       - ewm-db
       - stats-server
     environment:
+      - STAT_URL=http://stats-server:9090
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
-      - EWM_STAT_URL=http://stats-server:9090
 
   ewm-db:
     image: postgres:14-alpine

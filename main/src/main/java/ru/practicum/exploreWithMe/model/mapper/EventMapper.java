@@ -13,7 +13,7 @@ import ru.practicum.exploreWithMe.repository.RequestRepository;
 public class EventMapper {
     private final RequestRepository requestRepository;
     private final RestTemplate restTemplate = new RestTemplate();
-    private static final String STAT_URL = "http://localhost:9090";
+    private static final String STAT_URL = "http://stats-server:9090";
 
     public EventDto toDto(Event event) {
         EventDto eventDto = new EventDto();
