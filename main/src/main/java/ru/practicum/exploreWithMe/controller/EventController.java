@@ -97,10 +97,6 @@ public class EventController {
         hitDto.setIp(httpServletRequest.getRemoteAddr());
         hitDto.setUri(httpServletRequest.getRequestURI());
         hitDto.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        /*for (Event event : eventService.getEventsPublic(text, category, paid, dtStart, dtEnd, sort, from, size,
-                hitDto)) {
-            list.add(eventMapper.toShortDto(event));
-        }*/
 
         list = eventService.getEventsPublic(text, category, paid, dtStart, dtEnd, sort, from, size, hitDto);
         if (sort != null) {
