@@ -11,9 +11,6 @@ import ru.practicum.exploreWithMe.repository.RequestRepository;
 @Component
 @RequiredArgsConstructor
 public class EventMapper {
-    private final RequestRepository requestRepository;
-    private final RestTemplate restTemplate = new RestTemplate();
-    private static final String STAT_URL = "http://stats-server:9090";
 
     public EventDto toDto(Event event) {
         EventDto eventDto = new EventDto();
@@ -96,8 +93,20 @@ public class EventMapper {
         eventShortDto.setPaid(event.getPaid());
         eventShortDto.setCategory(event.getCategory().getId());
         eventShortDto.setInitiator(event.getInitiator());
-        eventShortDto.setConfirmedRequests(requestRepository.getCountConfirmed(event.getId()));
-        eventShortDto.setViews(getViews(event.getId()));
+
+        return eventShortDto;
+    }
+
+    public EventShortDto toShortFromFull(EventFullDto fullDto) {
+        EventShortDto eventShortDto = new EventShortDto();
+        eventShortDto.setId(fullDto.getId());
+        eventShortDto.setAnnotation(fullDto.getAnnotation());
+        eventShortDto.setTitle(fullDto.getTitle());
+        eventShortDto.setEventDate(fullDto.getEventDate());
+        eventShortDto.setPaid(fullDto.getPaid());
+        eventShortDto.setCategory(fullDto.getCategory().getId());
+        eventShortDto.setInitiator(fullDto.getInitiator());
+
         return eventShortDto;
     }
 
@@ -171,15 +180,4 @@ public class EventMapper {
         return eventDto;
     }
 
-    private Integer getViews(Integer eventId) {
-        ViewStatsDto[] views = restTemplate.getForObject(STAT_URL + "/stats?uris=/events/"
-                + eventId.toString(), ViewStatsDto[].class);
-        if (views != null) {
-            if (views.length > 0) {
-                return views[0].getHits().intValue();
-            }
-        }
-        return null;
-
-    }
 }

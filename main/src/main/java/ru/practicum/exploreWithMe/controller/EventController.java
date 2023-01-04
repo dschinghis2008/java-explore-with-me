@@ -75,7 +75,7 @@ public class EventController {
     }
 
     @GetMapping("/events")
-    public Collection<EventShortDto> getEventsPublic(@RequestParam(required = false) String text,
+    public List<EventShortDto> getEventsPublic(@RequestParam(required = false) String text,
                                                      @RequestParam(required = false) Integer[] category,
                                                      @RequestParam(required = false) Boolean paid,
                                                      @RequestParam(required = false) String rangeStart,
@@ -97,11 +97,12 @@ public class EventController {
         hitDto.setIp(httpServletRequest.getRemoteAddr());
         hitDto.setUri(httpServletRequest.getRequestURI());
         hitDto.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        for (Event event : eventService.getEventsPublic(text, category, paid, dtStart, dtEnd, sort, from, size,
+        /*for (Event event : eventService.getEventsPublic(text, category, paid, dtStart, dtEnd, sort, from, size,
                 hitDto)) {
             list.add(eventMapper.toShortDto(event));
-        }
+        }*/
 
+        list = eventService.getEventsPublic(text, category, paid, dtStart, dtEnd, sort, from, size, hitDto);
         if (sort != null) {
             if (sort.equals("VIEWS")) {
                 list.sort(Comparator.comparing(EventShortDto::getViews));
@@ -117,7 +118,7 @@ public class EventController {
         hitDto.setIp(httpServletRequest.getRemoteAddr());
         hitDto.setUri(httpServletRequest.getRequestURI());
         hitDto.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        return eventMapper.toDto(eventService.getById(id, hitDto));
+        return eventService.getById(id, hitDto);
     }
 
     @GetMapping("/users/{userId}/events")

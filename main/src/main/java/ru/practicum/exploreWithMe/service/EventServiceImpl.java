@@ -15,15 +15,19 @@ import ru.practicum.exploreWithMe.model.Category;
 import ru.practicum.exploreWithMe.model.Event;
 import ru.practicum.exploreWithMe.model.State;
 import ru.practicum.exploreWithMe.model.User;
-import ru.practicum.exploreWithMe.model.dto.HitDto;
+import ru.practicum.exploreWithMe.model.dto.*;
+import ru.practicum.exploreWithMe.model.mapper.EventMapper;
 import ru.practicum.exploreWithMe.repository.CategoryRepository;
 import ru.practicum.exploreWithMe.repository.EventRepository;
+import ru.practicum.exploreWithMe.repository.RequestRepository;
 import ru.practicum.exploreWithMe.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -36,13 +40,20 @@ public class EventServiceImpl implements EventService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
+    private final EventMapper eventMapper;
+
+    private final RequestRepository requestRepository;
+
     private final String statUrl;
 
     public EventServiceImpl(EventRepository eventRepository, UserRepository userRepository,
-                            CategoryRepository categoryRepository, @Value("${stats-server.url}") String statUrl) {
+                            CategoryRepository categoryRepository, EventMapper eventMapper,
+                            RequestRepository requestRepository, @Value("${stats-server.url}") String statUrl) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
+        this.eventMapper = eventMapper;
+        this.requestRepository = requestRepository;
         this.statUrl = statUrl;
     }
 
@@ -119,48 +130,65 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Collection<Event> getEventsPublic(String text, Integer[] category, Boolean paid, LocalDateTime dt1,
-                                             LocalDateTime dt2, String sort, Integer from, Integer size,
-                                             HitDto hitDto) {
+    public List<EventShortDto> getEventsPublic(String text, Integer[] category, Boolean paid, LocalDateTime dt1,
+                                               LocalDateTime dt2, String sort, Integer from, Integer size,
+                                               HitDto hitDto) {
         Pageable pageable = PageRequest.of(from, size);
         log.info("----=====>>>>EVENTSERV Public query events");
-        Collection<Event> result = new ArrayList<>();
+        List<Event> events = new ArrayList<>();
         if (text == null && category == null && paid == null && dt1 == null && dt2 == null && sort == null) {
-            result = eventRepository.getPublicAll(pageable).getContent();
+            events = eventRepository.getPublicAll(pageable).getContent();
         }
         if (dt1 == null && dt2 == null && sort == null && paid != null) {
-            result = eventRepository.getEventsPublicByDescrAndPaid(text, paid, pageable).getContent();
+            events = eventRepository.getEventsPublicByDescrAndPaid(text, paid, pageable).getContent();
         }
         if (category == null && dt1 != null && dt2 != null && sort.equals("EVENT_DATE")) {
             log.info("---===>>>EVENTSERV text=/{}/,categ=/{}/,paid=/{}/,dt1=/{}/,dt2=/{}/,from=/{}/,size=/{}/",
                     text, category, paid, dt1, dt2, from, size);
-            result = eventRepository.getEventsPublicAllCategSortByDate(text, paid,
+            events = eventRepository.getEventsPublicAllCategSortByDate(text, paid,
                     dt1, dt2, pageable).getContent();
         } else if (category == null && Objects.equals(text, "0") && dt1 != null && dt2 != null) {
             log.info("---===>>>EVENTSERV text=/{}/,categ=/{}/,paid=/{}/,dt1=/{}/,dt2=/{}/,from=/{}/,size=/{}/",
                     text, category, paid, dt1, dt2, from, size);
-            result = eventRepository.getEventsPublicAllWithDate(paid, dt1, dt2, pageable).getContent();
+            events = eventRepository.getEventsPublicAllWithDate(paid, dt1, dt2, pageable).getContent();
         } else {
             dt1 = LocalDateTime.now();
             dt2 = dt1.plusYears(1000);
             log.info("---===>>>EVENTSERV text=/{}/,categ=/{}/,paid=/{}/,dt1=/{}/,dt2=/{}/,from=/{}/,size=/{}/",
                     text, category, paid, dt1, dt2, from, size);
-            result = eventRepository.getEventsPublicAllWithDate(paid, dt1, dt2, pageable).getContent();
+            events = eventRepository.getEventsPublicAllWithDate(paid, dt1, dt2, pageable).getContent();
         }
 
         addToStatistic(hitDto);
+
+        List<EventShortDto> result = new ArrayList<>();
+        List<EventFullDto> fullDtos = events.stream()
+                .map(eventMapper::toFullDto)
+                .collect(Collectors.toList());
+        for (EventFullDto e : fullDtos) {
+            e.setViews(getViews(e.getId()));
+            e.setConfirmedRequests(requestRepository.getCountConfirmed(e.getId()));
+            if (e.getConfirmedRequests() <= e.getParticipantLimit()) {
+                EventShortDto eventShortDto = eventMapper.toShortFromFull(e);
+                eventShortDto.setViews(e.getViews());
+                eventShortDto.setConfirmedRequests(e.getConfirmedRequests());
+                result.add(eventShortDto);
+            }
+        }
+
         return result;
     }
 
     @Override
-    public Event getById(Integer id, HitDto hitDto) {
+    public EventDto getById(Integer id, HitDto hitDto) {
         addToStatistic(hitDto);
-        return eventRepository.findById(id).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
+        Event event = eventRepository.findById(id).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
+        return eventMapper.toDto(event);
     }
 
     @Override
     public Event getById(Integer id) {
-        return eventRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return eventRepository.findById(id).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
     }
 
     @Override
@@ -232,10 +260,22 @@ public class EventServiceImpl implements EventService {
     }
 
     private void addToStatistic(HitDto hitDto) {
-        String url =  statUrl + "/hit";
+        String url = statUrl + "/hit";
         log.info("---===>>>EVENTSERV hitDto=/{}/, url=/{}/", hitDto, url);
         HttpEntity<HitDto> request = new HttpEntity<>(hitDto);
         restTemplate.postForObject(url, request, HitDto.class);
+    }
+
+    private Integer getViews(Integer eventId) {
+        ViewStatsDto[] views = restTemplate.getForObject(statUrl + "/stats?uris=/events/"
+                + eventId.toString(), ViewStatsDto[].class);
+        if (views != null) {
+            if (views.length > 0) {
+                return views[0].getHits().intValue();
+            }
+        }
+        return null;
+
     }
 
 }
