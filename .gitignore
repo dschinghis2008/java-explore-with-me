@@ -1,6 +1,3 @@
-#main/.mvn/wrapper/maven-wrapper.properties
-#main/mvnw
-#main/mvnw.cmd
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
