@@ -27,7 +27,7 @@ public class RequestServiceImpl implements RequestService {
     private final EventRepository eventRepository;
 
     @Override
-    public Request add(Integer userId, Integer eventId) {
+    public Request add(Long userId, Long eventId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
         Event event = eventRepository.findById(eventId)
@@ -49,7 +49,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Request cancel(Integer userId, Integer requestId) {
+    public Request cancel(Long userId, Long requestId) {
         Request request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
         if (!request.getRequester().getId().equals(userId)) {
@@ -61,13 +61,13 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Collection<Request> getAll(Integer requesterId) {
+    public Collection<Request> getAll(Long requesterId) {
         log.info("---===>>>REQ_SERV query all requests userId= /{}/", requesterId);
         return requestRepository.findAllByRequesterOrderByCreated(requesterId);
     }
 
     @Override
-    public Collection<Request> getAllOfAuthor(Integer userId, Integer eventId) {
+    public Collection<Request> getAllOfAuthor(Long userId, Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow();
         if (!event.getInitiator().getId().equals(userId)) {
             throw new NotFoundException(HttpStatus.NOT_FOUND);
@@ -77,7 +77,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Request confirm(Integer userId, Integer eventId, Integer reqId) {
+    public Request confirm(Long userId, Long eventId, Long reqId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
         Event event = eventRepository.findById(eventId)
@@ -106,7 +106,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Request reject(Integer userId, Integer eventId, Integer reqId) {
+    public Request reject(Long userId, Long eventId, Long reqId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
         Event event = eventRepository.findById(eventId)

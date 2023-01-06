@@ -55,7 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category getById(Integer id) {
+    public Category getById(Long id) {
         log.info("---===>>>CATG_SERV get category id=/{}/", id);
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -67,7 +67,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void remove(Integer id) {
+    public void remove(Long id) {
         if (categoryRepository.findById(id).isPresent()) {
             log.info("deleted category id=/{}/", id);
             categoryRepository.deleteById(id);

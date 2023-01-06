@@ -7,17 +7,17 @@ import ru.practicum.exploreWithMe.model.Status;
 
 import java.util.Collection;
 
-public interface RequestRepository extends JpaRepository<Request, Integer> {
+public interface RequestRepository extends JpaRepository<Request, Long> {
     @Query("select r from Request r where r.requester.id = :requester")
-    Collection<Request> findAllByRequesterOrderByCreated(Integer requester);
+    Collection<Request> findAllByRequesterOrderByCreated(Long requester);
 
     @Query("select r from Request r where r.event.id = :eventId")
-    Collection<Request> findAllOfAuthor(Integer eventId);
+    Collection<Request> findAllOfAuthor(Long eventId);
 
-    Collection<Request> findAllByEventId(Integer eventId);
+    Collection<Request> findAllByEventId(Long eventId);
 
-    Collection<Request> findAllByEventIdAndStatus(Integer eventId, Status status);
+    Collection<Request> findAllByEventIdAndStatus(Long eventId, Status status);
 
     @Query("select count(r.id) from Request r where r.event.id=:eventId and r.status='CONFIRMED'")
-    Integer getCountConfirmed(Integer eventId);
+    Integer getCountConfirmed(Long eventId);
 }

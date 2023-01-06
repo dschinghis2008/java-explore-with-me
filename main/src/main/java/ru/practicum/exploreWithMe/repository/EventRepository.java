@@ -9,11 +9,12 @@ import ru.practicum.exploreWithMe.model.State;
 import ru.practicum.exploreWithMe.model.User;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
-public interface EventRepository extends JpaRepository<Event, Integer> {
+public interface EventRepository extends JpaRepository<Event, Long> {
     @Query("select e from Event e where e.initiator.id in :usersId and e.state in :states and e.category.id in :catId" +
             " and e.eventDate between :dt1 and :dt2 order by e.eventDate")
-    Page<Event> getEventsAdm(Integer[] usersId, State[] states, Integer[] catId,
+    Page<Event> getEventsAdm(Long[] usersId, State[] states, Long[] catId,
                              LocalDateTime dt1, LocalDateTime dt2, Pageable pageable);
 
     @Query("select e from Event e where e.state in :states and e.eventDate between :dt1 and :dt2" +
@@ -22,13 +23,13 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
 
     @Query("select e from Event e where e.initiator.id in :usersId and e.category.id in :catgsId " +
             "order by e.eventDate desc")
-    Page<Event> getAllByInitiatorAndCatg(Integer[] usersId, Integer[] catgsId, Pageable pageable);
+    Page<Event> getAllByInitiatorAndCatg(Long[] usersId, Long[] catgsId, Pageable pageable);
 
     @Query("select e from Event e where e.state='PUBLISHED' and e.eventDate between :dt1 and :dt2 " +
             "and e.category in :category and e.paid = :paid " +
             "and (lower(e.annotation) like concat('%', lower(:text), '%') " +
             "or lower(e.description) like concat('%', lower(:text), '%')) order by e.id desc")
-    Page<Event> getEventsPublic(String text, Integer[] category, Boolean paid,
+    Page<Event> getEventsPublic(String text, Long[] category, Boolean paid,
                                 LocalDateTime dt1, LocalDateTime dt2, Pageable pageable);
 
     @Query("select e from Event e where (lower(e.annotation) like concat('%', lower(:text), '%') " +
@@ -49,9 +50,12 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
     @Query("select e from Event e where e.state='PUBLISHED' order by e.eventDate")
     Page<Event> getPublicAll(Pageable pageable);
 
-    Page<Event> findAllByInitiatorId(Integer id, Pageable pageable);
+    Page<Event> findAllByInitiatorId(Long id, Pageable pageable);
 
-    Event findByIdAndInitiator(Integer id, User initiator);
+    Event findByIdAndInitiator(Long id, User initiator);
 
-    Event findByIdAndInitiatorId(Integer id, Integer initiatorId);
+    Event findByIdAndInitiatorId(Long id, Long initiatorId);
+
+    @Query("select e from Event e where e.id in :ids")
+    Set<Event> getEventsById(Set<Long> ids);
 }

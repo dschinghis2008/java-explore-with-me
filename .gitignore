@@ -3,6 +3,9 @@ target/
 main/.mvn/wrapper/maven-wrapper.properties
 main/mvnw
 main/mvnw.cmd
+stats/.mvn/wrapper/maven-wrapper.properties
+stats/mvnw
+stats/mvnw.cmd
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

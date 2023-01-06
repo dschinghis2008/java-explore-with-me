@@ -7,9 +7,9 @@ import java.util.Collection;
 public interface UserService {
     User add(User user);
 
-    Collection<User> getUsers(Integer from, Integer size, Integer[] arrId);
+    Collection<User> getUsers(Integer from, Integer size, Long[] arrId);
 
-    User getById(Integer id);
+    User getById(Long id);
 
-    void delete(Integer id);
+    void delete(Long id);
 }

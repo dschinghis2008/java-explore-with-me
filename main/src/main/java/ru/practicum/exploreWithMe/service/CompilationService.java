@@ -1,23 +1,25 @@
 package ru.practicum.exploreWithMe.service;
 
 import ru.practicum.exploreWithMe.model.Compilation;
+import ru.practicum.exploreWithMe.model.dto.CompilationDto;
+import ru.practicum.exploreWithMe.model.dto.NewCompilationDto;
 
 import java.util.Collection;
 
 public interface CompilationService {
-    Compilation add(Compilation compilation);
+    CompilationDto add(NewCompilationDto dto);
 
-    Compilation getById(Integer id);
+    Compilation getById(Long id);
 
     Collection<Compilation> getAll(Boolean pinned, Integer from, Integer size);
 
-    Compilation pin(Integer id);
+    Compilation pin(Long id);
 
-    Compilation unpin(Integer id);
+    Compilation unpin(Long id);
 
-    void addEventToCompilation(Integer idEvent, Integer idComp);
+    void addEventToCompilation(Long idEvent, Long idComp);
 
-    void deleteEventFromCompilation(Integer idEvent, Integer idComp);
+    void deleteEventFromCompilation(Long idEvent, Long idComp);
 
-    void deleteCompilation(Integer id);
+    void deleteCompilation(Long id);
 }

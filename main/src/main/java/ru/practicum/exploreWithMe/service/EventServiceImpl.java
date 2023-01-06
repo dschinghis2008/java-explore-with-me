@@ -62,7 +62,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event add(Integer userId, Event event) {
+    public Event add(Long userId, Event event) {
         event.setInitiator(userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND)));
         event.setCategory(categoryRepository.findById(event.getCategory().getId())
@@ -79,7 +79,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event publish(Integer eventId) {
+    public Event publish(Long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         event.setPublishedOn(LocalDateTime.now().withNano(0));
@@ -94,7 +94,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event reject(Integer eventId) {
+    public Event reject(Long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         if (event.getState().equals(State.PENDING)) {
@@ -107,7 +107,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Collection<Event> getEventsAdm(Integer[] usersId, String[] states, Integer[] catId,
+    public Collection<Event> getEventsAdm(Long[] usersId, String[] states, Long[] catId,
                                           LocalDateTime rangeStart, LocalDateTime rangeEnd,
                                           Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from, size);
@@ -180,25 +180,25 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventDto getById(Integer id, HitDto hitDto) {
+    public EventDto getById(Long id, HitDto hitDto) {
         addToStatistic(hitDto);
         Event event = eventRepository.findById(id).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
         return eventMapper.toDto(event);
     }
 
     @Override
-    public Event getById(Integer id) {
+    public Event getById(Long id) {
         return eventRepository.findById(id).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
     }
 
     @Override
-    public Collection<Event> getByUser(Integer id, Integer from, Integer size) {
+    public Collection<Event> getByUser(Long id, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from, size);
         return eventRepository.findAllByInitiatorId(id, pageable).getContent();
     }
 
     @Override
-    public Event update(Integer userId, Event event) {
+    public Event update(Long userId, Event event) {
         log.info("---===>>> EVENTSERV update: userId=/{}/, event=/{}/", userId, event);
         User user = userRepository.findById(userId).orElseThrow();
         Category category = categoryRepository.findById(event.getCategory().getId()).orElseThrow();
@@ -221,7 +221,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event updateAdm(Integer id, Event event) {
+    public Event updateAdm(Long id, Event event) {
         log.info("---===>>> EVENTSERV updateAdm: event=/{}/", event);
         Category category = categoryRepository.findById(event.getCategory().getId()).orElseThrow();
         Event eventUpd = eventRepository.findById(id).orElseThrow();
@@ -243,13 +243,13 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event getUserEvent(Integer userId, Integer eventId) {
+    public Event getUserEvent(Long userId, Long eventId) {
         log.info("---===>>> EVENTSERV query current user's event: userId=/{}/, event=/{}/", userId, eventId);
         return eventRepository.findByIdAndInitiatorId(eventId, userId);
     }
 
     @Override
-    public Event cancelEvent(Integer userId, Integer eventId) {
+    public Event cancelEvent(Long userId, Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow();
         if (!event.getInitiator().getId().equals(userId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -266,7 +266,7 @@ public class EventServiceImpl implements EventService {
         restTemplate.postForObject(url, request, HitDto.class);
     }
 
-    private Integer getViews(Integer eventId) {
+    private Integer getViews(Long eventId) {
         ViewStatsDto[] views = restTemplate.getForObject(statUrl + "/stats?uris=/events/"
                 + eventId.toString(), ViewStatsDto[].class);
         if (views != null) {

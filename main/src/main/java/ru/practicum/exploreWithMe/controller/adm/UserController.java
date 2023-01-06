@@ -1,4 +1,4 @@
-package ru.practicum.exploreWithMe.controller;
+package ru.practicum.exploreWithMe.controller.adm;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @GetMapping
-    public Collection<UserDto> getUsers(@RequestParam(required = false) Integer[] ids,
+    public Collection<UserDto> getUsers(@RequestParam(required = false) Long[] ids,
                                         @RequestParam(defaultValue = "10") @Positive Integer size,
                                         @RequestParam(defaultValue = "0") @PositiveOrZero Integer from) {
         List<UserDto> list = new ArrayList<>();
@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable Integer userId) {
+    public void deleteUser(@PathVariable Long userId) {
         userService.delete(userId);
     }
 }

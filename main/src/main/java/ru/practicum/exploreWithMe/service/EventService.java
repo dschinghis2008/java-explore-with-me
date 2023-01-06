@@ -10,30 +10,30 @@ import java.util.Collection;
 import java.util.List;
 
 public interface EventService {
-    Event add(Integer userId, Event event);
+    Event add(Long userId, Event event);
 
-    Event publish(Integer eventId);
+    Event publish(Long eventId);
 
-    Event reject(Integer eventId);
+    Event reject(Long eventId);
 
-    Collection<Event> getEventsAdm(Integer[] usersId, String[] states, Integer[] catId,
+    Collection<Event> getEventsAdm(Long[] usersId, String[] states, Long[] catId,
                                    LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size);
 
     List<EventShortDto> getEventsPublic(String text, Integer[] category, Boolean paid,
                                         LocalDateTime dt1, LocalDateTime dt2, String sort, Integer from, Integer size,
                                         HitDto hitDto);
 
-    EventDto getById(Integer id, HitDto hitDto);
+    EventDto getById(Long id, HitDto hitDto);
 
-    Event getById(Integer id);
+    Event getById(Long id);
 
-    Collection<Event> getByUser(Integer id, Integer from, Integer size);
+    Collection<Event> getByUser(Long id, Integer from, Integer size);
 
-    Event update(Integer userId, Event event);
+    Event update(Long userId, Event event);
 
-    Event updateAdm(Integer id, Event event);
+    Event updateAdm(Long id, Event event);
 
-    Event getUserEvent(Integer userId, Integer eventId);
+    Event getUserEvent(Long userId, Long eventId);
 
-    Event cancelEvent(Integer userId, Integer eventId);
+    Event cancelEvent(Long userId, Long eventId);
 }

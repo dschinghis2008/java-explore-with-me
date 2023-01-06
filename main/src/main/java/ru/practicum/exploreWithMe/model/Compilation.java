@@ -1,18 +1,22 @@
 package ru.practicum.exploreWithMe.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Collection;
+import java.util.Set;
 
-@Data
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "compilations")
 public class Compilation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private String title;
 
@@ -22,5 +26,12 @@ public class Compilation {
     @JoinTable(name = "events_compilations",
             joinColumns = @JoinColumn(name = "compilation_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))
-    private Collection<Event> events;
+    private Set<Event> events;
+
+    public Compilation(Long id, String title, Boolean pinned, Set<Event> events) {
+        this.id = id;
+        this.title = title;
+        this.pinned = pinned;
+        this.events = events;
+    }
 }

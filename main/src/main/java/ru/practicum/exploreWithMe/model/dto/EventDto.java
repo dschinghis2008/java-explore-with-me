@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class EventDto {
-    private Integer id;
+    private Long id;
     private String annotation;
     private String title;
     private String description;
@@ -24,7 +24,7 @@ public class EventDto {
     private Integer participantLimit;
     private Boolean requestModeration;
     private State state;
-    private Integer category;
+    private Long category;
     private User initiator;
     private Integer views;
     private Integer confirmedRequests;

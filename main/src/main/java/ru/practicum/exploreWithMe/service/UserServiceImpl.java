@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<User> getUsers(Integer from, Integer size, Integer[] arrId) {
+    public Collection<User> getUsers(Integer from, Integer size, Long[] arrId) {
         if (arrId.length > 0) {
             log.info("--==>>USRSRV query /{}/ users by id", arrId.length);
             return userRepository.findAllById(Arrays.asList(arrId));
@@ -43,13 +43,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getById(Integer id) {
+    public User getById(Long id) {
         log.info("--==>>USRSRV query user with id=/{}/", id);
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         if (userRepository.findById(id).isPresent()) {
             log.info("--==>>USRSRV deleted user /{}/", id);
             userRepository.deleteById(id);

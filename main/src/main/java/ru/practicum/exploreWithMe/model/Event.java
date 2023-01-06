@@ -1,17 +1,21 @@
 package ru.practicum.exploreWithMe.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "events")
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private String annotation;
 
@@ -50,4 +54,24 @@ public class Event {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private User initiator;
+
+    public Event(Long id, String annotation, String title, String description, LocalDateTime createdOn,
+                 LocalDateTime eventDate, Double latitude, Double longitude, Boolean paid, Integer participantLimit,
+                 LocalDateTime publishedOn, Boolean requestModeration, State state, Category category, User initiator) {
+        this.id = id;
+        this.annotation = annotation;
+        this.title = title;
+        this.description = description;
+        this.createdOn = createdOn;
+        this.eventDate = eventDate;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.paid = paid;
+        this.participantLimit = participantLimit;
+        this.publishedOn = publishedOn;
+        this.requestModeration = requestModeration;
+        this.state = state;
+        this.category = category;
+        this.initiator = initiator;
+    }
 }

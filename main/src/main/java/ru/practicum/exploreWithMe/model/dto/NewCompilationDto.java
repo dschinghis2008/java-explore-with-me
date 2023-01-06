@@ -2,12 +2,12 @@ package ru.practicum.exploreWithMe.model.dto;
 
 import lombok.Data;
 
-import java.util.Collection;
+import java.util.Set;
 
 @Data
 public class NewCompilationDto {
-    private Integer id;
+    private Long id;
     private String title;
     private Boolean pinned;
-    private Collection<Integer> events;
+    private Set<Long> events;
 }

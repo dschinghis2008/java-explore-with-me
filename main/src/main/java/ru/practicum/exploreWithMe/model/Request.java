@@ -1,18 +1,22 @@
 package ru.practicum.exploreWithMe.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "requests")
 public class Request {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private LocalDateTime created;
 
@@ -24,4 +28,12 @@ public class Request {
 
     @Enumerated(value = EnumType.STRING)
     private Status status;
+
+    public Request(Long id, LocalDateTime created, Event event, User requester, Status status) {
+        this.id = id;
+        this.created = created;
+        this.event = event;
+        this.requester = requester;
+        this.status = status;
+    }
 }
