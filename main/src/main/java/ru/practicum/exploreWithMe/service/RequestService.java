@@ -6,15 +6,15 @@ import java.util.Collection;
 
 public interface RequestService {
 
-    Request add(Long userId, Long eventId);
+    Request add(long userId, long eventId);
 
-    Request cancel(Long userId, Long requestId);
+    Request cancel(long userId, long requestId);
 
-    Collection<Request> getAll(Long requesterId);
+    Collection<Request> getAll(long requesterId);
 
-    Collection<Request> getAllOfAuthor(Long userId, Long eventId);
+    Collection<Request> getAllOfAuthor(long userId, long eventId);
 
-    Request confirm(Long userId, Long eventId, Long reqId);
+    Request confirm(long userId, long eventId, long reqId);
 
-    Request reject(Long userId, Long eventId, Long reqId);
+    Request reject(long userId, long eventId, long reqId);
 }

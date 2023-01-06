@@ -9,17 +9,17 @@ import java.util.Collection;
 public interface CompilationService {
     CompilationDto add(NewCompilationDto dto);
 
-    Compilation getById(Long id);
+    Compilation getById(long id);
 
     Collection<Compilation> getAll(Boolean pinned, Integer from, Integer size);
 
-    Compilation pin(Long id);
+    Compilation pin(long id);
 
-    Compilation unpin(Long id);
+    Compilation unpin(long id);
 
-    void addEventToCompilation(Long idEvent, Long idComp);
+    void addEventToCompilation(long idEvent, long idComp);
 
-    void deleteEventFromCompilation(Long idEvent, Long idComp);
+    void deleteEventFromCompilation(long idEvent, long idComp);
 
-    void deleteCompilation(Long id);
+    void deleteCompilation(long id);
 }

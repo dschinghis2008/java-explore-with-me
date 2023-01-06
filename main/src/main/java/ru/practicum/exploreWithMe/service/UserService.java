@@ -9,7 +9,7 @@ public interface UserService {
 
     Collection<User> getUsers(Integer from, Integer size, Long[] arrId);
 
-    User getById(Long id);
+    User getById(long id);
 
-    void delete(Long id);
+    void delete(long id);
 }

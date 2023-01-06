@@ -10,11 +10,11 @@ import java.util.Collection;
 import java.util.List;
 
 public interface EventService {
-    Event add(Long userId, Event event);
+    Event add(long userId, Event event);
 
-    Event publish(Long eventId);
+    Event publish(long eventId);
 
-    Event reject(Long eventId);
+    Event reject(long eventId);
 
     Collection<Event> getEventsAdm(Long[] usersId, String[] states, Long[] catId,
                                    LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size);
@@ -23,17 +23,17 @@ public interface EventService {
                                         LocalDateTime dt1, LocalDateTime dt2, String sort, Integer from, Integer size,
                                         HitDto hitDto);
 
-    EventDto getById(Long id, HitDto hitDto);
+    EventDto getById(long id, HitDto hitDto);
 
-    Event getById(Long id);
+    Event getById(long id);
 
-    Collection<Event> getByUser(Long id, Integer from, Integer size);
+    Collection<Event> getByUser(long id, Integer from, Integer size);
 
-    Event update(Long userId, Event event);
+    Event update(long userId, Event event);
 
-    Event updateAdm(Long id, Event event);
+    Event updateAdm(long id, Event event);
 
-    Event getUserEvent(Long userId, Long eventId);
+    Event getUserEvent(long userId, long eventId);
 
-    Event cancelEvent(Long userId, Long eventId);
+    Event cancelEvent(long userId, long eventId);
 }

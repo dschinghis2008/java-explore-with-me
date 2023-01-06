@@ -43,18 +43,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getById(Long id) {
+    public User getById(long id) {
         log.info("--==>>USRSRV query user with id=/{}/", id);
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(long id) {
         if (userRepository.findById(id).isPresent()) {
             log.info("--==>>USRSRV deleted user /{}/", id);
             userRepository.deleteById(id);
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new NotFoundException(HttpStatus.NOT_FOUND);
         }
     }
 }

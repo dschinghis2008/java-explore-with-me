@@ -9,9 +9,9 @@ public interface CategoryService {
 
     Category update(Category category);
 
-    Category getById(Long id);
+    Category getById(long id);
 
     Collection<Category> getAll();
 
-    void remove(Long id);
+    void remove(long id);
 }

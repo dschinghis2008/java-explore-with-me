@@ -2,6 +2,7 @@ package ru.practicum.exploreWithMe.controller.adm;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.exploreWithMe.exception.InvalidDataException;
 import ru.practicum.exploreWithMe.model.User;
@@ -9,6 +10,7 @@ import ru.practicum.exploreWithMe.model.dto.UserDto;
 import ru.practicum.exploreWithMe.model.mapper.UserMapper;
 import ru.practicum.exploreWithMe.service.UserService;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.ArrayList;
@@ -17,16 +19,14 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 @RequestMapping(path = "/admin/users")
 public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
 
     @PostMapping
-    public UserDto add(@RequestBody UserDto userDto) {
-        if (userDto.getName() == null || userDto.getEmail() == null) {
-            throw new InvalidDataException(HttpStatus.BAD_REQUEST);
-        }
+    public UserDto add(@RequestBody @Valid UserDto userDto) {
         return userMapper.toDto(userService.add(userMapper.toUser(userDto)));
     }
 

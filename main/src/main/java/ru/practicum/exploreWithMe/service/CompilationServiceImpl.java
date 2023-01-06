@@ -42,7 +42,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public Compilation getById(Long id) {
+    public Compilation getById(long id) {
         log.info("---===>>> query compilation /{}/", id);
         return compilationRepository.findById(id).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
     }
@@ -56,7 +56,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     @Transactional
-    public Compilation pin(Long id) {
+    public Compilation pin(long id) {
         Compilation compilation =
                 compilationRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         compilation.setPinned(true);
@@ -66,7 +66,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     @Transactional
-    public Compilation unpin(Long id) {
+    public Compilation unpin(long id) {
         Compilation compilation =
                 compilationRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         compilation.setPinned(false);
@@ -76,7 +76,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     @Transactional
-    public void addEventToCompilation(Long idEvent, Long idComp) {
+    public void addEventToCompilation(long idEvent, long idComp) {
         Compilation compilation = compilationRepository.findById(idComp)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         Event event = eventRepository.findById(idEvent)
@@ -88,7 +88,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     @Transactional
-    public void deleteEventFromCompilation(Long idEvent, Long idComp) {
+    public void deleteEventFromCompilation(long idEvent, long idComp) {
         log.info("---===>>> COMP_SERV delete event from comp");
         Compilation compilation = compilationRepository.findById(idComp)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -105,7 +105,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     @Transactional
-    public void deleteCompilation(Long id) {
+    public void deleteCompilation(long id) {
         log.info("---===>>> delete compilation id=/{}/", id);
         compilationRepository.deleteById(id);
     }
