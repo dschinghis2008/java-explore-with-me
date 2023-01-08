@@ -21,7 +21,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User add(User user) {
-       
         log.info("--==>>USRSRV add user /{}/", user.getId());
         return userRepository.save(user);
     }

@@ -37,7 +37,7 @@ public class Compilation {
         this.events = events;
     }
 
-    public boolean getPinned(){
+    public boolean getPinned() {
         return pinned;
     }
 }

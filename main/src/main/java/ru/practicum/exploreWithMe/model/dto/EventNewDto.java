@@ -2,7 +2,6 @@ package ru.practicum.exploreWithMe.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import ru.practicum.exploreWithMe.model.State;
 import ru.practicum.exploreWithMe.model.User;
 
