@@ -2,11 +2,9 @@ package ru.practicum.exploreWithMe.model.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 import ru.practicum.exploreWithMe.model.Category;
 import ru.practicum.exploreWithMe.model.Event;
 import ru.practicum.exploreWithMe.model.dto.*;
-import ru.practicum.exploreWithMe.repository.RequestRepository;
 
 @Component
 @RequiredArgsConstructor
@@ -149,6 +147,9 @@ public class EventMapper {
         event.setPaid(eventNewDto.getPaid());
         event.setParticipantLimit(eventNewDto.getParticipantLimit());
         event.setPublishedOn(eventNewDto.getPublishedOn());
+        if (eventNewDto.getRequestModeration() == null) {
+            eventNewDto.setRequestModeration(false);
+        }
         event.setRequestModeration(eventNewDto.getRequestModeration());
         event.setState(eventNewDto.getState());
         event.setCategory(category);

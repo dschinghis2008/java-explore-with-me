@@ -6,14 +6,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-import ru.practicum.exploreWithMe.exception.ConflictException;
 import ru.practicum.exploreWithMe.exception.NotFoundException;
 import ru.practicum.exploreWithMe.model.User;
 import ru.practicum.exploreWithMe.repository.UserRepository;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -23,15 +21,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User add(User user) {
-        if (userRepository.getCountByName(user.getName()) > 0) {
-            throw new ConflictException(HttpStatus.CONFLICT);
-        }
+       
         log.info("--==>>USRSRV add user /{}/", user.getId());
         return userRepository.save(user);
     }
 
     @Override
-    public Collection<User> getUsers(Integer from, Integer size, Long[] arrId) {
+    public List<User> getUsers(Integer from, Integer size, Long[] arrId) {
         if (arrId.length > 0) {
             log.info("--==>>USRSRV query /{}/ users by id", arrId.length);
             return userRepository.findAllById(Arrays.asList(arrId));

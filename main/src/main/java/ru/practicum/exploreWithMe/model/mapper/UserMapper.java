@@ -1,10 +1,10 @@
 package ru.practicum.exploreWithMe.model.mapper;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import ru.practicum.exploreWithMe.model.User;
 import ru.practicum.exploreWithMe.model.dto.UserDto;
 
-@Service
+@Component
 public class UserMapper {
     public UserDto toDto(User user) {
         UserDto userDto = new UserDto();

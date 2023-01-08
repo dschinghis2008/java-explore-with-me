@@ -3,6 +3,7 @@ package ru.practicum.exploreWithMe.controller.adm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.exploreWithMe.model.Event;
 import ru.practicum.exploreWithMe.model.dto.*;
@@ -14,12 +15,12 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@Validated
 public class EventAdmController {
     private final EventService eventService;
     private final EventMapper eventMapper;
@@ -35,19 +36,19 @@ public class EventAdmController {
     }
 
     @GetMapping("/admin/events")
-    public Collection<EventDto> getEventsAdm(@RequestParam(required = false) Long[] usersId,
-                                             @RequestParam(required = false) String[] states,
-                                             @RequestParam(required = false) Long[] catId,
+    public List<EventDto> getEventsAdm(@RequestParam(required = false) Long[] usersId,
+                                       @RequestParam(required = false) String[] states,
+                                       @RequestParam(required = false) Long[] catId,
 
-                                             @RequestParam(required = false)
-                                             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-                                             LocalDateTime rangeStart,
+                                       @RequestParam(required = false)
+                                       @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                       LocalDateTime rangeStart,
 
-                                             @RequestParam(required = false)
-                                             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+                                       @RequestParam(required = false)
+                                       @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
 
-                                             @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
-                                             @RequestParam(defaultValue = "10") @Positive Integer size) {
+                                       @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+                                       @RequestParam(defaultValue = "10") @Positive Integer size) {
 
         List<EventDto> list = new ArrayList<>();
 

@@ -4,15 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import ru.practicum.exploreWithMe.exception.ConflictException;
 import ru.practicum.exploreWithMe.exception.InvalidDataException;
-import ru.practicum.exploreWithMe.exception.NotFoundException;
 import ru.practicum.exploreWithMe.model.Category;
 import ru.practicum.exploreWithMe.repository.CategoryRepository;
 
-import java.util.Collection;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -22,36 +19,18 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    @Transactional
     public Category add(Category category) {
-        if (category.getName() == null) {
-            throw new InvalidDataException(HttpStatus.BAD_REQUEST);
-        }
-        if (categoryRepository.getCountByName(category.getName()) > 0) {
-            throw new ConflictException(HttpStatus.CONFLICT);
-        }
         log.info("---===>>>CATG_SERV added category /{}/", category);
         return categoryRepository.save(category);
     }
 
     @Override
-    @Transactional
     public Category update(Category category) {
-        if (category.getId() == null) {
+        if (category.getName().isBlank()) {
             throw new InvalidDataException(HttpStatus.BAD_REQUEST);
         }
-        Category updCategory = categoryRepository.findById(category.getId())
-                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
-        log.info("---===>>>CATG_SERV try updated category=/{}/,upd=/{}/", category, updCategory);
-        if (!category.getName().isEmpty()) {
-            if (categoryRepository.getCountByName(category.getName()) > 0) {
-                throw new ConflictException(HttpStatus.CONFLICT);
-            }
-            updCategory.setName(category.getName());
-        }
-        categoryRepository.save(updCategory);
-        log.info("---===>>>CATG_SERV updated category=/{}/", updCategory);
-        return updCategory;
+        log.info("---===>>>CATG_SERV updated category=/{}/", category);
+        return categoryRepository.save(category);
     }
 
     @Override
@@ -62,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Collection<Category> getAll() {
+    public List<Category> getAll() {
         return categoryRepository.findAll();
     }
 

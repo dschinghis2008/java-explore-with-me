@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -24,7 +23,7 @@ public class EventController {
     private final EventService eventService;
     private final String appName;
 
-    public EventController(EventService eventService,  @Value("${APP}") String appName) {
+    public EventController(EventService eventService, @Value("${APP}") String appName) {
         this.eventService = eventService;
         this.appName = appName;
     }
@@ -51,7 +50,7 @@ public class EventController {
         hitDto.setApp(appName);
         hitDto.setIp(httpServletRequest.getRemoteAddr());
         hitDto.setUri(httpServletRequest.getRequestURI());
-        hitDto.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        hitDto.setTimestamp(LocalDateTime.now());
 
         list = eventService.getEventsPublic(text, category, paid, rangeStart, rangeEnd, sort, from, size, hitDto);
         if (sort != null) {
@@ -68,7 +67,7 @@ public class EventController {
         hitDto.setApp(appName);
         hitDto.setIp(httpServletRequest.getRemoteAddr());
         hitDto.setUri(httpServletRequest.getRequestURI());
-        hitDto.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        hitDto.setTimestamp(LocalDateTime.now());
         return eventService.getById(id, hitDto);
     }
 

@@ -14,7 +14,7 @@ import javax.validation.Valid;
 @Validated
 public class CategoryAdmController {
     private final CategoryService categoryService;
-    private  final CategoryMapper categoryMapper;
+    private final CategoryMapper categoryMapper;
 
     @PostMapping("/admin/categories")
     public CategoryDto add(@RequestBody @Valid CategoryDto categoryDto) {
@@ -23,7 +23,7 @@ public class CategoryAdmController {
 
     @PatchMapping("/admin/categories")
     public CategoryDto update(@RequestBody @Valid CategoryDto categoryDto) {
-        return categoryMapper.toDto(categoryService.add(categoryMapper.toCategory(categoryDto)));
+        return categoryMapper.toDto(categoryService.update(categoryMapper.toCategory(categoryDto)));
     }
 
     @DeleteMapping("/admin/categories/{catId}")

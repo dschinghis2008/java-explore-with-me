@@ -2,6 +2,7 @@ package ru.practicum.exploreWithMe.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import ru.practicum.exploreWithMe.model.State;
 import ru.practicum.exploreWithMe.model.User;
 
@@ -26,6 +27,7 @@ public class EventNewDto {
     private Boolean paid;
 
     private Integer participantLimit;
+
     private Boolean requestModeration;
     private State state;
 

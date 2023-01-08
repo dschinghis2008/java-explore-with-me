@@ -15,7 +15,7 @@ import ru.practicum.exploreWithMe.repository.RequestRepository;
 import ru.practicum.exploreWithMe.repository.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -61,13 +61,13 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Collection<Request> getAll(long requesterId) {
+    public List<Request> getAll(long requesterId) {
         log.info("---===>>>REQ_SERV query all requests userId= /{}/", requesterId);
         return requestRepository.findAllByRequesterOrderByCreated(requesterId);
     }
 
     @Override
-    public Collection<Request> getAllOfAuthor(long userId, long eventId) {
+    public List<Request> getAllOfAuthor(long userId, long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow();
         if (!event.getInitiator().getId().equals(userId)) {
             throw new NotFoundException(HttpStatus.NOT_FOUND);
@@ -90,7 +90,7 @@ public class RequestServiceImpl implements RequestService {
         if (!request.getEvent().getId().equals(eventId)) {
             throw new NotFoundException(HttpStatus.NOT_FOUND);
         }
-        if (event.getParticipantLimit().equals(requestRepository.getCountConfirmed(eventId) - 1)) {
+        if (event.getParticipantLimit() == (requestRepository.getCountConfirmed(eventId) - 1)) {
             for (Request r : requestRepository.findAllByEventIdAndStatus(eventId, Status.PENDING)) {
                 r.setStatus(Status.REJECTED);
                 requestRepository.save(r);

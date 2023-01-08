@@ -6,7 +6,7 @@ import ru.practicum.exploreWithMe.model.dto.EventShortDto;
 import ru.practicum.exploreWithMe.model.dto.HitDto;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
+import java.util.List;
 import java.util.List;
 
 public interface EventService {
@@ -16,7 +16,7 @@ public interface EventService {
 
     Event reject(long eventId);
 
-    Collection<Event> getEventsAdm(Long[] usersId, String[] states, Long[] catId,
+    List<Event> getEventsAdm(Long[] usersId, String[] states, Long[] catId,
                                    LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size);
 
     List<EventShortDto> getEventsPublic(String text, Integer[] category, Boolean paid,
@@ -27,7 +27,7 @@ public interface EventService {
 
     Event getById(long id);
 
-    Collection<Event> getByUser(long id, Integer from, Integer size);
+    List<Event> getByUser(long id, Integer from, Integer size);
 
     Event update(long userId, Event event);
 

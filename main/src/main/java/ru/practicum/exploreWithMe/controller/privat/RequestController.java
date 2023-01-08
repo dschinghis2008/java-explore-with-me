@@ -3,13 +3,11 @@ package ru.practicum.exploreWithMe.controller.privat;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.exploreWithMe.model.Request;
 import ru.practicum.exploreWithMe.model.dto.RequestDto;
 import ru.practicum.exploreWithMe.model.mapper.RequestMapper;
 import ru.practicum.exploreWithMe.service.RequestService;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -30,14 +28,14 @@ public class RequestController {
     }
 
     @GetMapping("/users/{userId}/requests")
-    public Collection<RequestDto> getAll(@PathVariable long userId) {
+    public List<RequestDto> getAll(@PathVariable long userId) {
         return requestService.getAll(userId).stream()
                 .map(requestMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/users/{userId}/events/{eventId}/requests")
-    public Collection<RequestDto> getAllOfAuthor(@PathVariable long userId, @PathVariable long eventId) {
+    public List<RequestDto> getAllOfAuthor(@PathVariable long userId, @PathVariable long eventId) {
         return requestService.getAllOfAuthor(userId, eventId).stream()
                 .map(requestMapper::toDto)
                 .collect(Collectors.toList());

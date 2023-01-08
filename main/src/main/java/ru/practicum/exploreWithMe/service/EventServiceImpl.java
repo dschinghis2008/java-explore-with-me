@@ -24,14 +24,12 @@ import ru.practicum.exploreWithMe.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-//@RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
@@ -107,9 +105,9 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Collection<Event> getEventsAdm(Long[] usersId, String[] states, Long[] catId,
-                                          LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                          Integer from, Integer size) {
+    public List<Event> getEventsAdm(Long[] usersId, String[] states, Long[] catId,
+                                    LocalDateTime rangeStart, LocalDateTime rangeEnd,
+                                    Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from, size);
         if (states == null && rangeStart == null && rangeEnd == null) {
             return eventRepository.getAllByInitiatorAndCatg(usersId, catId, pageable).getContent();
@@ -192,7 +190,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Collection<Event> getByUser(long id, Integer from, Integer size) {
+    public List<Event> getByUser(long id, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from, size);
         return eventRepository.findAllByInitiatorId(id, pageable).getContent();
     }

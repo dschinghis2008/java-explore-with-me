@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -18,9 +19,10 @@ public class Compilation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Size(max = 500)
     private String title;
 
-    private Boolean pinned;
+    private boolean pinned;
 
     @ManyToMany
     @JoinTable(name = "events_compilations",
@@ -28,10 +30,14 @@ public class Compilation {
             inverseJoinColumns = @JoinColumn(name = "event_id"))
     private Set<Event> events;
 
-    public Compilation(Long id, String title, Boolean pinned, Set<Event> events) {
+    public Compilation(Long id, String title, boolean pinned, Set<Event> events) {
         this.id = id;
         this.title = title;
         this.pinned = pinned;
         this.events = events;
+    }
+
+    public boolean getPinned(){
+        return pinned;
     }
 }

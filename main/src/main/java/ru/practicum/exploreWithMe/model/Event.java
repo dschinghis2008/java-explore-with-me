@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
@@ -17,35 +18,39 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Size(max = 1000)
     private String annotation;
 
+    @Size(max = 100)
     private String title;
 
+    @Size(max = 1000)
     private String description;
 
     @Column(name = "created")
     private LocalDateTime createdOn;
 
-    @Column(name = "dt")
+    @Column(name = "dt", nullable = false)
     private LocalDateTime eventDate;
 
     @Column(name = "event_lat")
-    private Double latitude;
+    private double latitude;
 
     @Column(name = "event_lon")
-    private Double longitude;
+    private double longitude;
 
-    private Boolean paid;
+    private boolean paid;
 
     @Column(name = "participant_max")
-    private Integer participantLimit;
+    private int participantLimit;
 
     @Column(name = "published_dt")
     private LocalDateTime publishedOn;
 
     @Column(name = "request_moderation")
-    private Boolean requestModeration;
+    private boolean requestModeration;
 
+    @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private State state;
 
@@ -56,8 +61,8 @@ public class Event {
     private User initiator;
 
     public Event(Long id, String annotation, String title, String description, LocalDateTime createdOn,
-                 LocalDateTime eventDate, Double latitude, Double longitude, Boolean paid, Integer participantLimit,
-                 LocalDateTime publishedOn, Boolean requestModeration, State state, Category category, User initiator) {
+                 LocalDateTime eventDate, Double latitude, Double longitude, boolean paid, int participantLimit,
+                 LocalDateTime publishedOn, boolean requestModeration, State state, Category category, User initiator) {
         this.id = id;
         this.annotation = annotation;
         this.title = title;
@@ -73,5 +78,13 @@ public class Event {
         this.state = state;
         this.category = category;
         this.initiator = initiator;
+    }
+
+    public boolean getPaid() {
+        return paid;
+    }
+
+    public boolean getRequestModeration() {
+        return requestModeration;
     }
 }

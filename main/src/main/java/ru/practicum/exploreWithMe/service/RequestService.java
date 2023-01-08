@@ -2,7 +2,7 @@ package ru.practicum.exploreWithMe.service;
 
 import ru.practicum.exploreWithMe.model.Request;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface RequestService {
 
@@ -10,9 +10,9 @@ public interface RequestService {
 
     Request cancel(long userId, long requestId);
 
-    Collection<Request> getAll(long requesterId);
+    List<Request> getAll(long requesterId);
 
-    Collection<Request> getAllOfAuthor(long userId, long eventId);
+    List<Request> getAllOfAuthor(long userId, long eventId);
 
     Request confirm(long userId, long eventId, long reqId);
 

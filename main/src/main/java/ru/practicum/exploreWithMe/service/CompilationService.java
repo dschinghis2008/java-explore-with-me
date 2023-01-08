@@ -4,14 +4,14 @@ import ru.practicum.exploreWithMe.model.Compilation;
 import ru.practicum.exploreWithMe.model.dto.CompilationDto;
 import ru.practicum.exploreWithMe.model.dto.NewCompilationDto;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface CompilationService {
     CompilationDto add(NewCompilationDto dto);
 
     Compilation getById(long id);
 
-    Collection<Compilation> getAll(Boolean pinned, Integer from, Integer size);
+    List<Compilation> getAll(Boolean pinned, Integer from, Integer size);
 
     Compilation pin(long id);
 

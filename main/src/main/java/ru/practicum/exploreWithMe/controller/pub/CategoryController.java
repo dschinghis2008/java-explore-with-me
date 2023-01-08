@@ -6,17 +6,17 @@ import ru.practicum.exploreWithMe.model.dto.CategoryDto;
 import ru.practicum.exploreWithMe.model.mapper.CategoryMapper;
 import ru.practicum.exploreWithMe.service.CategoryService;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;
-    private  final CategoryMapper categoryMapper;
+    private final CategoryMapper categoryMapper;
 
     @GetMapping("/categories")
-    public Collection<CategoryDto> getAll() {
+    public List<CategoryDto> getAll() {
         return categoryService.getAll().stream()
                 .map(categoryMapper::toDto)
                 .collect(Collectors.toList());

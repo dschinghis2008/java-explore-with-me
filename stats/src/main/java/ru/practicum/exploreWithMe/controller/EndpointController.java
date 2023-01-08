@@ -8,7 +8,7 @@ import ru.practicum.exploreWithMe.model.Mapper;
 import ru.practicum.exploreWithMe.model.ViewStats;
 import ru.practicum.exploreWithMe.service.EndpointServiceImpl;
 
-import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,7 +24,7 @@ public class EndpointController {
     }
 
     @GetMapping("/stats")
-    public Collection<ViewStats> getAll(@RequestParam(required = false) String start,
+    public List<ViewStats> getAll(@RequestParam(required = false) String start,
                                         @RequestParam(required = false) String end,
                                         @RequestParam String[] uris,
                                         @RequestParam(defaultValue = "false") Boolean unique) {

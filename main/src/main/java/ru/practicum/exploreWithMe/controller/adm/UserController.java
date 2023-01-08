@@ -1,10 +1,8 @@
 package ru.practicum.exploreWithMe.controller.adm;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.exploreWithMe.exception.InvalidDataException;
 import ru.practicum.exploreWithMe.model.User;
 import ru.practicum.exploreWithMe.model.dto.UserDto;
 import ru.practicum.exploreWithMe.model.mapper.UserMapper;
@@ -14,7 +12,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -31,9 +28,9 @@ public class UserController {
     }
 
     @GetMapping
-    public Collection<UserDto> getUsers(@RequestParam(required = false) Long[] ids,
-                                        @RequestParam(defaultValue = "10") @Positive Integer size,
-                                        @RequestParam(defaultValue = "0") @PositiveOrZero Integer from) {
+    public List<UserDto> getUsers(@RequestParam(required = false) Long[] ids,
+                                  @RequestParam(defaultValue = "10") @Positive int size,
+                                  @RequestParam(defaultValue = "0") @PositiveOrZero int from) {
         List<UserDto> list = new ArrayList<>();
         for (User user : userService.getUsers(from, size, ids)) {
             list.add(userMapper.toDto(user));
@@ -42,7 +39,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable Long userId) {
+    public void deleteUser(@PathVariable long userId) {
         userService.delete(userId);
     }
 }

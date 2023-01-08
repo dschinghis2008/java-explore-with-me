@@ -13,7 +13,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,10 +32,10 @@ public class EventPrivateController {
     }
 
     @GetMapping("/users/{userId}/events")
-    public Collection<EventDto> getByUser(@PathVariable long userId,
-                                          @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
-                                          @RequestParam(defaultValue = "10") @Positive Integer size) {
-        Collection<EventDto> eventDtos = new ArrayList<>();
+    public List<EventDto> getByUser(@PathVariable long userId,
+                                    @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+                                    @RequestParam(defaultValue = "10") @Positive Integer size) {
+        List<EventDto> eventDtos = new ArrayList<>();
         for (Event event : eventService.getByUser(userId, from, size)) {
             eventDtos.add(eventMapper.toDto(event));
         }

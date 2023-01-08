@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +27,7 @@ public class EndpointServiceImpl implements EndpoinService {
     }
 
     @Override
-    public Collection<ViewStats> getAll(String start, String end, String[] uris, Boolean unique) {
+    public List<ViewStats> getAll(String start, String end, String[] uris, Boolean unique) {
         LocalDateTime startDt;
         LocalDateTime endDt;
         if (start != null && end != null) {
@@ -43,7 +43,7 @@ public class EndpointServiceImpl implements EndpoinService {
                     LocalDateTime.parse(URLDecoder.decode("2101-01-01 00:00:00", StandardCharsets.UTF_8),
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         }
-        Collection<ViewStats> result = new ArrayList<>();
+        List<ViewStats> result = new ArrayList<>();
         if (unique) {
             result = repository.getAllWithUniqueIp(startDt, endDt, uris);
         } else {

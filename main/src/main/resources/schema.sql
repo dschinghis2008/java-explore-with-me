@@ -36,8 +36,7 @@ CREATE TABLE IF NOT EXISTS events
     category_id         BIGINT
                         CONSTRAINT events_category
                         REFERENCES categories
-                        ON UPDATE CASCADE ON DELETE CASCADE,
-                        UNIQUE (event_lat, event_lon)
+                        ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS compilations

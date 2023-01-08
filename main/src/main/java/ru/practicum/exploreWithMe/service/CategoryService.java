@@ -2,7 +2,7 @@ package ru.practicum.exploreWithMe.service;
 
 import ru.practicum.exploreWithMe.model.Category;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface CategoryService {
     Category add(Category category);
@@ -11,7 +11,7 @@ public interface CategoryService {
 
     Category getById(long id);
 
-    Collection<Category> getAll();
+    List<Category> getAll();
 
     void remove(long id);
 }
