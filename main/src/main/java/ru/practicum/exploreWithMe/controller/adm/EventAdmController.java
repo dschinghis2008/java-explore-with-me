@@ -14,7 +14,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -50,21 +49,18 @@ public class EventAdmController {
                                        @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
                                        @RequestParam(defaultValue = "10") @Positive Integer size) {
 
-        List<EventDto> list = new ArrayList<>();
+        List<Event> events = eventService.getEventsAdm(usersId, states, catId, rangeStart, rangeEnd, from, size);
 
         log.info("====>>>>EVENT CTRL before eventService: usersId=/{}/, states=/{}/, catId=/{}/, dtStart=/{}/, " +
                         "dtEnd=/{}/, from=/{}/, size=/{}/",
                 usersId, states, catId, rangeStart, rangeEnd, from, size);
 
-        for (Event event : eventService.getEventsAdm(usersId, states, catId, rangeStart, rangeEnd, from, size)) {
-            list.add(eventMapper.toDto(event));
-        }
-        return list;
+        return eventMapper.toDtos(events);
     }
 
     @PutMapping("/admin/events/{eventId}")
-    public EventAdmDto updateAdm(@PathVariable long eventId, @RequestBody @Valid EventNewDto newDto) {
-        return eventMapper.toAdmDto(eventService.updateAdm(eventId, eventMapper.toEventFromNewDto(newDto)));
+    public EventFullDto updateAdm(@PathVariable long eventId, @RequestBody @Valid EventUpdateDto newDto) {
+        return eventMapper.toFullDto(eventService.updateAdm(eventId, eventMapper.toEventFromNewDto(newDto)));
     }
 
 }

@@ -11,7 +11,7 @@ public interface CategoryService {
 
     Category getById(long id);
 
-    List<Category> getAll();
+    List<Category> getAll(Integer from, Integer size);
 
     void remove(long id);
 }

@@ -12,7 +12,6 @@ import ru.practicum.exploreWithMe.service.EventService;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -35,15 +34,12 @@ public class EventPrivateController {
     public List<EventDto> getByUser(@PathVariable long userId,
                                     @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
                                     @RequestParam(defaultValue = "10") @Positive Integer size) {
-        List<EventDto> eventDtos = new ArrayList<>();
-        for (Event event : eventService.getByUser(userId, from, size)) {
-            eventDtos.add(eventMapper.toDto(event));
-        }
-        return eventDtos;
+        List<Event> events = eventService.getByUser(userId, from, size);
+        return eventMapper.toDtos(events);
     }
 
     @PatchMapping("/users/{userId}/events")
-    public EventFullDto update(@PathVariable long userId, @RequestBody @Valid EventNewDto eventDto) {
+    public EventFullDto update(@PathVariable long userId, @RequestBody @Valid EventUpdateDto eventDto) {
         log.info("---===>>>EVENT CTRL UPDATE eventDto=/{}/", eventDto);
         Event event = eventMapper.toEventFromNewDto(eventDto);
         log.info("---===>>>EVENT CTRL UPDATE event=/{}/", event);

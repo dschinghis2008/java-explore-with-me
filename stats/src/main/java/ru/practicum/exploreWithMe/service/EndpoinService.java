@@ -9,4 +9,5 @@ public interface EndpoinService {
     EndpointHit add(EndpointHit endpointHit);
 
     List<ViewStats> getAll(String start, String end, String[] uris, Boolean unique);
+
 }

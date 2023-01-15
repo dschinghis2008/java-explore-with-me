@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.exploreWithMe.model.Event;
-import ru.practicum.exploreWithMe.model.State;
+import ru.practicum.exploreWithMe.model.EventState;
 import ru.practicum.exploreWithMe.model.User;
 
 import java.time.LocalDateTime;
@@ -14,12 +14,12 @@ import java.util.Set;
 public interface EventRepository extends JpaRepository<Event, Long> {
     @Query("select e from Event e where e.initiator.id in :usersId and e.state in :states and e.category.id in :catId" +
             " and e.eventDate between :dt1 and :dt2 order by e.eventDate")
-    Page<Event> getEventsAdm(Long[] usersId, State[] states, Long[] catId,
+    Page<Event> getEventsAdm(Long[] usersId, EventState[] states, Long[] catId,
                              LocalDateTime dt1, LocalDateTime dt2, Pageable pageable);
 
     @Query("select e from Event e where e.state in :states and e.eventDate between :dt1 and :dt2" +
             " order by e.eventDate desc")
-    Page<Event> getEventsAdmAll(State[] states, LocalDateTime dt1, LocalDateTime dt2, Pageable pageable);
+    Page<Event> getEventsAdmAll(EventState[] states, LocalDateTime dt1, LocalDateTime dt2, Pageable pageable);
 
     @Query("select e from Event e where e.initiator.id in :usersId and e.category.id in :catgsId " +
             "order by e.eventDate desc")

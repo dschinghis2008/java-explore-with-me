@@ -19,6 +19,7 @@ import java.util.List;
 @Slf4j
 public class EndpointServiceImpl implements EndpoinService {
     private final EndpointRepository repository;
+    private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public EndpointHit add(EndpointHit endpointHit) {
@@ -31,17 +32,11 @@ public class EndpointServiceImpl implements EndpoinService {
         LocalDateTime startDt;
         LocalDateTime endDt;
         if (start != null && end != null) {
-            startDt = LocalDateTime.parse(URLDecoder.decode(start, StandardCharsets.UTF_8),
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            endDt = LocalDateTime.parse(URLDecoder.decode(end, StandardCharsets.UTF_8),
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            startDt = LocalDateTime.parse(URLDecoder.decode(start, StandardCharsets.UTF_8), dtf);
+            endDt = LocalDateTime.parse(URLDecoder.decode(end, StandardCharsets.UTF_8), dtf);
         } else {
-            startDt =
-                    LocalDateTime.parse(URLDecoder.decode("1971-01-01 00:00:00", StandardCharsets.UTF_8),
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            endDt =
-                    LocalDateTime.parse(URLDecoder.decode("2101-01-01 00:00:00", StandardCharsets.UTF_8),
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            startDt = LocalDateTime.parse(URLDecoder.decode("1971-01-01 00:00:00", StandardCharsets.UTF_8), dtf);
+            endDt = LocalDateTime.parse(URLDecoder.decode("2101-01-01 00:00:00", StandardCharsets.UTF_8), dtf);
         }
         List<ViewStats> result = new ArrayList<>();
         if (unique) {

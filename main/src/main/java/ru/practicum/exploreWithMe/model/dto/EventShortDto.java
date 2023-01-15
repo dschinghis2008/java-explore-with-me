@@ -2,7 +2,6 @@ package ru.practicum.exploreWithMe.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import ru.practicum.exploreWithMe.model.User;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +16,7 @@ public class EventShortDto {
 
     private Long category;
     private Boolean paid;
-    private User initiator;
+    private UserDto initiator;
     private Integer views;
     private Integer confirmedRequests;
 }

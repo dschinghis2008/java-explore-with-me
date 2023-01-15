@@ -7,24 +7,28 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.exploreWithMe.model.dto.*;
 import ru.practicum.exploreWithMe.service.EventService;
+import ru.practicum.exploreWithMe.service.webClient.WebClient;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @Slf4j
 @Validated
 public class EventController {
     private final EventService eventService;
+    private final WebClient webClient;
+
     private final String appName;
 
-    public EventController(EventService eventService, @Value("${APP}") String appName) {
+    public EventController(EventService eventService, WebClient webClient, @Value("${APP}") String appName) {
         this.eventService = eventService;
+        this.webClient = webClient;
         this.appName = appName;
     }
 
@@ -38,37 +42,40 @@ public class EventController {
                                                LocalDateTime rangeStart,
 
                                                @RequestParam(required = false)
-                                               @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+                                               @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                               LocalDateTime rangeEnd,
 
                                                @RequestParam(required = false) String sort,
                                                @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
                                                @RequestParam(defaultValue = "10") @Positive Integer size,
                                                HttpServletRequest httpServletRequest) {
 
-        List<EventShortDto> list = new ArrayList<>();
-        HitDto hitDto = new HitDto();
-        hitDto.setApp(appName);
-        hitDto.setIp(httpServletRequest.getRemoteAddr());
-        hitDto.setUri(httpServletRequest.getRequestURI());
-        hitDto.setTimestamp(LocalDateTime.now());
-
-        list = eventService.getEventsPublic(text, category, paid, rangeStart, rangeEnd, sort, from, size, hitDto);
+        List<EventShortDto> shortDtos = eventService.getEventsPublic(text, category, paid, rangeStart, rangeEnd,
+                sort, from, size);
+        log.info("--==>>EVENT_CTRL query ALL PUBLIC count = /{}/", shortDtos.size());
+        webClient.addToStatistic(httpServletRequest, appName);
+        ViewStatsDto[] viewStatsDtos = webClient.getViews(shortDtos.toArray(new EventShortDto[0]));
+        for (ViewStatsDto view : viewStatsDtos) {
+            log.info("--==>>substr uri = /{}/", view.getUri().substring(view.getUri().lastIndexOf("/")));
+            Long viewId = Long.parseLong(view.getUri().substring(view.getUri().lastIndexOf("/")));
+            shortDtos.stream()
+                    .filter(eventShortDto -> Objects.equals(eventShortDto.getId(), viewId))
+                    .forEach(eventShortDto -> eventShortDto.setViews(Math.toIntExact(view.getHits())));
+        }
         if (sort != null) {
             if (sort.equals("VIEWS")) {
-                list.sort(Comparator.comparing(EventShortDto::getViews));
+                shortDtos.sort(Comparator.comparing(EventShortDto::getViews));
             }
         }
-        return list;
+        return shortDtos;
     }
 
     @GetMapping("/events/{id}")
     public EventDto getById(@PathVariable long id, HttpServletRequest httpServletRequest) {
-        HitDto hitDto = new HitDto();
-        hitDto.setApp(appName);
-        hitDto.setIp(httpServletRequest.getRemoteAddr());
-        hitDto.setUri(httpServletRequest.getRequestURI());
-        hitDto.setTimestamp(LocalDateTime.now());
-        return eventService.getById(id, hitDto);
+        EventDto eventDto = eventService.getById(id);
+        eventDto.setViews(webClient.findView(id));
+        webClient.addToStatistic(httpServletRequest, appName);
+        return eventDto;
     }
 
 }

@@ -3,10 +3,8 @@ package ru.practicum.exploreWithMe.service;
 import ru.practicum.exploreWithMe.model.Event;
 import ru.practicum.exploreWithMe.model.dto.EventDto;
 import ru.practicum.exploreWithMe.model.dto.EventShortDto;
-import ru.practicum.exploreWithMe.model.dto.HitDto;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.List;
 
 public interface EventService {
@@ -19,13 +17,10 @@ public interface EventService {
     List<Event> getEventsAdm(Long[] usersId, String[] states, Long[] catId,
                                    LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size);
 
-    List<EventShortDto> getEventsPublic(String text, Integer[] category, Boolean paid,
-                                        LocalDateTime dt1, LocalDateTime dt2, String sort, Integer from, Integer size,
-                                        HitDto hitDto);
+    List<EventShortDto> getEventsPublic(String text, Integer[] category, Boolean paid, LocalDateTime dt1,
+                                        LocalDateTime dt2, String sort, Integer from, Integer size);
 
-    EventDto getById(long id, HitDto hitDto);
-
-    Event getById(long id);
+    EventDto getById(long id);
 
     List<Event> getByUser(long id, Integer from, Integer size);
 

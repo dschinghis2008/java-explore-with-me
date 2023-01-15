@@ -52,7 +52,7 @@ public class Event {
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private State state;
+    private EventState state;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Category category;
@@ -62,7 +62,7 @@ public class Event {
 
     public Event(Long id, String annotation, String title, String description, LocalDateTime createdOn,
                  LocalDateTime eventDate, Double latitude, Double longitude, boolean paid, int participantLimit,
-                 LocalDateTime publishedOn, boolean requestModeration, State state, Category category, User initiator) {
+                 LocalDateTime publishedOn, boolean requestModeration, EventState state, Category category, User initiator) {
         this.id = id;
         this.annotation = annotation;
         this.title = title;

@@ -2,6 +2,7 @@ package ru.practicum.exploreWithMe.model.dto;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
@@ -9,9 +10,13 @@ import java.util.Set;
 public class NewCompilationDto {
     private Long id;
 
-    @NotNull
+    @NotBlank
     private String title;
 
-    private Boolean pinned;
+    private boolean pinned;
     private Set<Long> events;
+
+    public boolean getPinned() {
+        return pinned;
+    }
 }

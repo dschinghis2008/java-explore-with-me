@@ -6,16 +6,21 @@ import ru.practicum.exploreWithMe.model.Compilation;
 import ru.practicum.exploreWithMe.model.dto.NewCompilationDto;
 import ru.practicum.exploreWithMe.model.dto.CompilationDto;
 
+import java.util.stream.Collectors;
+
 @Component
 @RequiredArgsConstructor
 public class CompilationMapper {
 
+    private final EventMapper eventMapper;
     public CompilationDto toDto(Compilation compilation) {
         CompilationDto compilationDto = new CompilationDto();
         compilationDto.setId(compilation.getId());
         compilationDto.setTitle(compilation.getTitle());
         compilationDto.setPinned(compilation.getPinned());
-        compilationDto.setEvents(compilation.getEvents());
+        compilationDto.setEvents(compilation.getEvents().stream()
+                .map(eventMapper::toDto)
+                .collect(Collectors.toSet()));
         return compilationDto;
     }
 

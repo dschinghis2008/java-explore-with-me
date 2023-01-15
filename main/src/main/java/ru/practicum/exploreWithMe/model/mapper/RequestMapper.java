@@ -1,12 +1,10 @@
 package ru.practicum.exploreWithMe.model.mapper;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.exploreWithMe.model.Request;
 import ru.practicum.exploreWithMe.model.dto.RequestDto;
 
 @Component
-@RequiredArgsConstructor
 public class RequestMapper {
 
     public RequestDto toDto(Request request) {

@@ -18,4 +18,5 @@ public interface EndpointRepository extends JpaRepository<EndpointHit, Integer> 
             "from EndpointHit e " +
             "where e.timestamp between :start and :end and e.uri in :uris group by e.app,e.uri")
     List<ViewStats> getAllWithUniqueIp(LocalDateTime start, LocalDateTime end, String[] uris);
+
 }

@@ -10,9 +10,9 @@ public interface RequestService {
 
     Request cancel(long userId, long requestId);
 
-    List<Request> getAll(long requesterId);
+    List<Request> getAll(long requesterId, Integer from, Integer size);
 
-    List<Request> getAllOfAuthor(long userId, long eventId);
+    List<Request> getAllOfAuthor(long userId, long eventId, Integer from, Integer size);
 
     Request confirm(long userId, long eventId, long reqId);
 

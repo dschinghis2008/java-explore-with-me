@@ -7,6 +7,8 @@ import ru.practicum.exploreWithMe.model.dto.RequestDto;
 import ru.practicum.exploreWithMe.model.mapper.RequestMapper;
 import ru.practicum.exploreWithMe.service.RequestService;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,15 +30,19 @@ public class RequestController {
     }
 
     @GetMapping("/users/{userId}/requests")
-    public List<RequestDto> getAll(@PathVariable long userId) {
-        return requestService.getAll(userId).stream()
+    public List<RequestDto> getAll(@PathVariable long userId,
+                                   @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+                                   @RequestParam(defaultValue = "10") @Positive Integer size) {
+        return requestService.getAll(userId, from, size).stream()
                 .map(requestMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/users/{userId}/events/{eventId}/requests")
-    public List<RequestDto> getAllOfAuthor(@PathVariable long userId, @PathVariable long eventId) {
-        return requestService.getAllOfAuthor(userId, eventId).stream()
+    public List<RequestDto> getAllOfAuthor(@PathVariable long userId, @PathVariable long eventId,
+                                           @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+                                           @RequestParam(defaultValue = "10") @Positive Integer size) {
+        return requestService.getAllOfAuthor(userId, eventId, from, size).stream()
                 .map(requestMapper::toDto)
                 .collect(Collectors.toList());
     }

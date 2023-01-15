@@ -32,7 +32,7 @@ public class UserController {
                                   @RequestParam(defaultValue = "10") @Positive int size,
                                   @RequestParam(defaultValue = "0") @PositiveOrZero int from) {
         List<UserDto> list = new ArrayList<>();
-        for (User user : userService.getUsers(from, size, ids)) {
+        for (User user : userService.getAllUsers(from, size, ids)) {
             list.add(userMapper.toDto(user));
         }
         return list;

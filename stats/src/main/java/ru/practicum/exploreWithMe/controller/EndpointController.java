@@ -31,4 +31,5 @@ public class EndpointController {
         log.info("-==>>ENDPNTCTRL query stats start=/{}/,end=/{}/,uris=/{}/,uniq=/{}/", start, end, uris, unique);
         return endpointService.getAll(start, end, uris, unique);
     }
+
 }

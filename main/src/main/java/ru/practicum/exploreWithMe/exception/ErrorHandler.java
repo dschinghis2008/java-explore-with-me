@@ -62,6 +62,13 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorBody handleConstraintViolation(ConstraintViolationException e) {
         log.info("--==>>REST ConstrViolation exception: /{}/", e.getMessage());
-        return new ErrorBody(HttpStatus.BAD_REQUEST, List.of("not valid data"));
+        return new ErrorBody(HttpStatus.CONFLICT, List.of("not valid data"));
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorBody handleIllegalArgs(IllegalArgumentException e) {
+        log.info("--==>>REST IllegalArgs exception: /{}/", e.getMessage());
+        return new ErrorBody(HttpStatus.BAD_REQUEST, List.of("illegal args"));
     }
 }
