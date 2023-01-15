@@ -11,7 +11,6 @@ import ru.practicum.exploreWithMe.model.dto.ViewStatsDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Component
 @Slf4j
