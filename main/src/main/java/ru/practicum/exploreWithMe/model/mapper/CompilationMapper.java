@@ -3,7 +3,7 @@ package ru.practicum.exploreWithMe.model.mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.exploreWithMe.model.Compilation;
-import ru.practicum.exploreWithMe.model.dto.NewCompilationDto;
+import ru.practicum.exploreWithMe.model.dto.CompilationInDto;
 import ru.practicum.exploreWithMe.model.dto.CompilationDto;
 
 import java.util.stream.Collectors;
@@ -24,7 +24,7 @@ public class CompilationMapper {
         return compilationDto;
     }
 
-    public Compilation toCompilation(NewCompilationDto compilationDto) {
+    public Compilation toCompilation(CompilationInDto compilationDto) {
         Compilation compilation = new Compilation();
         compilation.setId(compilationDto.getId());
         compilation.setTitle(compilationDto.getTitle());
@@ -32,11 +32,4 @@ public class CompilationMapper {
         return compilation;
     }
 
-    public CompilationDto toDtoFromNewDto(NewCompilationDto compilationDto) {
-        CompilationDto dto = new CompilationDto();
-        dto.setId(compilationDto.getId());
-        dto.setTitle(compilationDto.getTitle());
-        dto.setPinned(compilationDto.getPinned());
-        return dto;
-    }
 }

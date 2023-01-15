@@ -12,7 +12,7 @@ import ru.practicum.exploreWithMe.exception.NotFoundException;
 import ru.practicum.exploreWithMe.model.Compilation;
 import ru.practicum.exploreWithMe.model.Event;
 import ru.practicum.exploreWithMe.model.dto.CompilationDto;
-import ru.practicum.exploreWithMe.model.dto.NewCompilationDto;
+import ru.practicum.exploreWithMe.model.dto.CompilationInDto;
 import ru.practicum.exploreWithMe.model.mapper.CompilationMapper;
 import ru.practicum.exploreWithMe.repository.CompilationRepository;
 import ru.practicum.exploreWithMe.repository.EventRepository;
@@ -32,7 +32,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     @Transactional
-    public CompilationDto add(NewCompilationDto dto) {
+    public CompilationDto add(CompilationInDto dto) {
         Compilation compilation = compilationMapper.toCompilation(dto);
         Set<Event> events = eventRepository.getEventsById(dto.getEvents());
         compilation.setEvents(events);

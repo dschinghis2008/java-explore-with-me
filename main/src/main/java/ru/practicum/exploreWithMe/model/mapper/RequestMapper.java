@@ -17,11 +17,4 @@ public class RequestMapper {
         return requestDto;
     }
 
-    public Request toRequest(RequestDto requestDto) {
-        Request request = new Request();
-        request.setId(requestDto.getId());
-        request.setCreated(requestDto.getCreated());
-        request.setStatus(requestDto.getStatus());
-        return request;
-    }
 }

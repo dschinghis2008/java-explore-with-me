@@ -3,6 +3,7 @@ package ru.practicum.exploreWithMe.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpException;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -16,18 +17,12 @@ import java.util.List;
 @Slf4j
 public class ErrorHandler {
 
-    @ExceptionHandler
+    @ExceptionHandler(value = {Throwable.class, HttpException.class, PersistenceException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorBody handleHttp(HttpException e) {
-        log.info("--==>>REST Unchecked exception: /{}/", e.getMessage());
-        return new ErrorBody(HttpStatus.INTERNAL_SERVER_ERROR, List.of("server error"));
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorBody handleHibernat(PersistenceException e) {
-        log.info("--==>>REST Unchecked exception: /{}/", e.getMessage());
-        return new ErrorBody(HttpStatus.INTERNAL_SERVER_ERROR, List.of("server error"));
+    public ErrorBody handleThrowable(Throwable e, HttpException eh, PersistenceException ep) {
+        log.info("--==>>REST Unchecked Throwable-Htpp-Persist exception: /{}/, ",
+                e.getMessage() + eh.getMessage() + ep.getMessage());
+        return new ErrorBody(HttpStatus.INTERNAL_SERVER_ERROR, List.of("unchecked error"));
     }
 
     @ExceptionHandler
@@ -62,7 +57,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorBody handleConstraintViolation(ConstraintViolationException e) {
         log.info("--==>>REST ConstrViolation exception: /{}/", e.getMessage());
-        return new ErrorBody(HttpStatus.CONFLICT, List.of("not valid data"));
+        return new ErrorBody(HttpStatus.CONFLICT, List.of("constr violation"));
     }
 
     @ExceptionHandler
@@ -70,5 +65,12 @@ public class ErrorHandler {
     public ErrorBody handleIllegalArgs(IllegalArgumentException e) {
         log.info("--==>>REST IllegalArgs exception: /{}/", e.getMessage());
         return new ErrorBody(HttpStatus.BAD_REQUEST, List.of("illegal args"));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorBody handleIntegrityViolation(DataIntegrityViolationException e) {
+        log.info("--==>>REST DataIntegrViolation exception: /{}/", e.getMessage());
+        return new ErrorBody(HttpStatus.CONFLICT, List.of("data integrity violation"));
     }
 }

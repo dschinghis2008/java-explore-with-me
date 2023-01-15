@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.exploreWithMe.model.dto.CompilationDto;
-import ru.practicum.exploreWithMe.model.dto.NewCompilationDto;
+import ru.practicum.exploreWithMe.model.dto.CompilationInDto;
 import ru.practicum.exploreWithMe.model.mapper.CompilationMapper;
 import ru.practicum.exploreWithMe.service.CompilationService;
 
@@ -20,7 +20,7 @@ public class CompilationAdmController {
     private final CompilationMapper compilationMapper;
 
     @PostMapping("/admin/compilations")
-    public CompilationDto add(@RequestBody @Valid NewCompilationDto compilationDto) {
+    public CompilationDto add(@RequestBody @Valid CompilationInDto compilationDto) {
         log.info("====>>> COMP_REST add comp=/{}/", compilationDto);
         return compilationService.add(compilationDto);
     }

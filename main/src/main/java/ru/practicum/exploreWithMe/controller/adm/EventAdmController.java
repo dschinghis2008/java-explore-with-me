@@ -59,8 +59,8 @@ public class EventAdmController {
     }
 
     @PutMapping("/admin/events/{eventId}")
-    public EventFullDto updateAdm(@PathVariable long eventId, @RequestBody @Valid EventUpdateDto newDto) {
-        return eventMapper.toFullDto(eventService.updateAdm(eventId, eventMapper.toEventFromNewDto(newDto)));
+    public EventFullDto updateAdm(@PathVariable long eventId, @RequestBody @Valid EventInDto newDto) {
+        return eventMapper.toFullDto(eventService.updateAdm(eventId, eventMapper.toEventFromInDto(newDto)));
     }
 
 }

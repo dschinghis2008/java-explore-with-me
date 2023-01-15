@@ -2,12 +2,12 @@ package ru.practicum.exploreWithMe.service;
 
 import ru.practicum.exploreWithMe.model.Compilation;
 import ru.practicum.exploreWithMe.model.dto.CompilationDto;
-import ru.practicum.exploreWithMe.model.dto.NewCompilationDto;
+import ru.practicum.exploreWithMe.model.dto.CompilationInDto;
 
 import java.util.List;
 
 public interface CompilationService {
-    CompilationDto add(NewCompilationDto dto);
+    CompilationDto add(CompilationInDto dto);
 
     Compilation getById(long id);
 

@@ -23,9 +23,9 @@ public class EventPrivateController {
     private final EventMapper eventMapper;
 
     @PostMapping("/users/{userId}/events")
-    public EventDto add(@PathVariable long userId, @RequestBody @Valid EventDto dto) {
+    public EventDto add(@PathVariable long userId, @RequestBody @Valid EventInDto dto) {
         log.info("---====>>>>>>EVENT CONTROLLER Before add event, dto=/{}/", dto);
-        EventDto newDto = eventMapper.toDto(eventService.add(userId, eventMapper.toEvent(dto)));
+        EventDto newDto = eventMapper.toDto(eventService.add(userId, eventMapper.toEventFromInDto(dto)));
         log.info("---====>>>>>>EVENT CONTROLLER after add event newDto=/{}/", newDto);
         return newDto;
     }
@@ -39,9 +39,9 @@ public class EventPrivateController {
     }
 
     @PatchMapping("/users/{userId}/events")
-    public EventFullDto update(@PathVariable long userId, @RequestBody @Valid EventUpdateDto eventDto) {
+    public EventFullDto update(@PathVariable long userId, @RequestBody @Valid EventInDto eventDto) {
         log.info("---===>>>EVENT CTRL UPDATE eventDto=/{}/", eventDto);
-        Event event = eventMapper.toEventFromNewDto(eventDto);
+        Event event = eventMapper.toEventFromInDto(eventDto);
         log.info("---===>>>EVENT CTRL UPDATE event=/{}/", event);
         return eventMapper.toFullDto(eventService.update(userId, event));
     }

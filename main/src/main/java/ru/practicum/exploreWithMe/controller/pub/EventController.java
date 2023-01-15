@@ -56,8 +56,9 @@ public class EventController {
         webClient.addToStatistic(httpServletRequest, appName);
         ViewStatsDto[] viewStatsDtos = webClient.getViews(shortDtos.toArray(new EventShortDto[0]));
         for (ViewStatsDto view : viewStatsDtos) {
-            log.info("--==>>substr uri = /{}/", view.getUri().substring(view.getUri().lastIndexOf("/")));
-            Long viewId = Long.parseLong(view.getUri().substring(view.getUri().lastIndexOf("/")));
+            log.info("--==>>substr uri = /{}/",
+                    view.getUri().substring(view.getUri().lastIndexOf("/") + 1));
+            Long viewId = Long.parseLong(view.getUri().substring(view.getUri().lastIndexOf("/") + 1));
             shortDtos.stream()
                     .filter(eventShortDto -> Objects.equals(eventShortDto.getId(), viewId))
                     .forEach(eventShortDto -> eventShortDto.setViews(Math.toIntExact(view.getHits())));
