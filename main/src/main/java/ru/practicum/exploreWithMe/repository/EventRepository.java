@@ -4,14 +4,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import ru.practicum.exploreWithMe.model.Event;
 import ru.practicum.exploreWithMe.model.EventState;
+import ru.practicum.exploreWithMe.model.EventsCountConfirmed;
 import ru.practicum.exploreWithMe.model.User;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-public interface EventRepository extends JpaRepository<Event, Long> {
+public interface EventRepository extends JpaRepository<Event, Long>, QuerydslPredicateExecutor {
     @Query("select e from Event e where e.initiator.id in :usersId and e.state in :states and e.category.id in :catId" +
             " and e.eventDate between :dt1 and :dt2 order by e.eventDate")
     Page<Event> getEventsAdm(Long[] usersId, EventState[] states, Long[] catId,
@@ -58,4 +62,5 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query("select e from Event e where e.id in :ids")
     Set<Event> getEventsById(Set<Long> ids);
+
 }

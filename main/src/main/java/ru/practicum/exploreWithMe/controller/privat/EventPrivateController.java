@@ -23,9 +23,9 @@ public class EventPrivateController {
     private final EventMapper eventMapper;
 
     @PostMapping("/users/{userId}/events")
-    public EventDto add(@PathVariable long userId, @RequestBody @Valid EventInDto dto) {
+    public EventDto add(@PathVariable long userId, @RequestBody @Valid EventNewDto dto) {
         log.info("---====>>>>>>EVENT CONTROLLER Before add event, dto=/{}/", dto);
-        EventDto newDto = eventMapper.toDto(eventService.add(userId, eventMapper.toEventFromInDto(dto)));
+        EventDto newDto = eventMapper.toDto(eventService.add(userId, eventMapper.toEventFromNewDto(dto)));
         log.info("---====>>>>>>EVENT CONTROLLER after add event newDto=/{}/", newDto);
         return newDto;
     }
@@ -34,14 +34,14 @@ public class EventPrivateController {
     public List<EventDto> getByUser(@PathVariable long userId,
                                     @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
                                     @RequestParam(defaultValue = "10") @Positive Integer size) {
-        List<Event> events = eventService.getByUser(userId, from, size);
-        return eventMapper.toDtos(events);
+        List<EventDto> dtos = eventService.getByUser(userId, from, size);
+        return dtos;
     }
 
     @PatchMapping("/users/{userId}/events")
-    public EventFullDto update(@PathVariable long userId, @RequestBody @Valid EventInDto eventDto) {
+    public EventFullDto update(@PathVariable long userId, @RequestBody @Valid EventUpdDto eventDto) {
         log.info("---===>>>EVENT CTRL UPDATE eventDto=/{}/", eventDto);
-        Event event = eventMapper.toEventFromInDto(eventDto);
+        Event event = eventMapper.toEventFromUpdDto(eventDto);
         log.info("---===>>>EVENT CTRL UPDATE event=/{}/", event);
         return eventMapper.toFullDto(eventService.update(userId, event));
     }
@@ -49,7 +49,7 @@ public class EventPrivateController {
     @GetMapping("/users/{userId}/events/{eventId}")
     public EventUserDto getUserEvent(@PathVariable long userId, @PathVariable long eventId) {
         log.info("---===>>>EVENT CTRL query eventId=/{}/", eventId);
-        return eventMapper.toUserDto(eventService.getUserEvent(userId, eventId));
+        return eventService.getUserEvent(userId, eventId);
     }
 
     @PatchMapping("/users/{userId}/events/{eventId}")

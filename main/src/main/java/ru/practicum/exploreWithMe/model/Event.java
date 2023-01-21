@@ -18,13 +18,13 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(max = 1000)
+    @Size(min = 20, max = 2000)
     private String annotation;
 
-    @Size(max = 100)
+    @Size(min = 3, max = 120)
     private String title;
 
-    @Size(max = 1000)
+    @Size(min = 20, max = 7000)
     private String description;
 
     @Column(name = "created")

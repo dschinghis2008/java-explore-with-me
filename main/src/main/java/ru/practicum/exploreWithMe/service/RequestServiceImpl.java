@@ -30,6 +30,11 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public Request add(long userId, long eventId) {
+
+        Request reqExist = requestRepository.findByRequesterIdAndEventId(userId, eventId);
+        if (reqExist != null) {
+            return reqExist;
+        }
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
         Event event = eventRepository.findById(eventId)
@@ -40,12 +45,12 @@ public class RequestServiceImpl implements RequestService {
         if (event.getState() != EventState.PUBLISHED) {
             throw new NotFoundException(HttpStatus.NOT_FOUND);
         }
-
         Request request = new Request();
         request.setCreated(LocalDateTime.now().withNano(0));
         request.setRequester(user);
         request.setEvent(event);
-        if (requestRepository.getCountConfirmed(eventId) >= event.getParticipantLimit()) {
+        if (requestRepository.getCountConfirmed(eventId) >= event.getParticipantLimit()
+                && event.getParticipantLimit() > 0) {
             throw new NotFoundException(HttpStatus.CONFLICT);
         }
         if (!event.getRequestModeration()) {
@@ -60,11 +65,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public Request cancel(long userId, long requestId) {
-        Request request = requestRepository.findById(requestId)
-                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
-        if (!request.getRequester().getId().equals(userId)) {
-            throw new NotFoundException(HttpStatus.NOT_FOUND);
-        }
+        Request request = requestRepository.findByRequesterIdAndId(userId, requestId);
         request.setStatus(Status.CANCELED);
         log.info("---===>>>REQ_SERV canceled request /{}/", request);
         return request;
@@ -80,7 +81,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public List<Request> getAllOfAuthor(long userId, long eventId, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from, size);
-        Event event = eventRepository.findById(eventId).orElseThrow();
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
         if (!event.getInitiator().getId().equals(userId)) {
             throw new NotFoundException(HttpStatus.NOT_FOUND);
         }

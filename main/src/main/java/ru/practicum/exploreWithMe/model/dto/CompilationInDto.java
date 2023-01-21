@@ -7,7 +7,6 @@ import java.util.Set;
 
 @Data
 public class CompilationInDto {
-    private Long id;
 
     @NotBlank
     private String title;
@@ -15,7 +14,4 @@ public class CompilationInDto {
     private boolean pinned;
     private Set<Long> events;
 
-    public boolean getPinned() {
-        return pinned;
-    }
 }

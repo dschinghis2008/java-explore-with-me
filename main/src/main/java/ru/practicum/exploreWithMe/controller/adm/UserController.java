@@ -12,7 +12,10 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,11 +34,9 @@ public class UserController {
     public List<UserDto> getUsers(@RequestParam(required = false) Long[] ids,
                                   @RequestParam(defaultValue = "10") @Positive int size,
                                   @RequestParam(defaultValue = "0") @PositiveOrZero int from) {
-        List<UserDto> list = new ArrayList<>();
-        for (User user : userService.getAllUsers(from, size, ids)) {
-            list.add(userMapper.toDto(user));
-        }
-        return list;
+        return userService.getAllUsers(from, size, ids).stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @DeleteMapping("/{userId}")

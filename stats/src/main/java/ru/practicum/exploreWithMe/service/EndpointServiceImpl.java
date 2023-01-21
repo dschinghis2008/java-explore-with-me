@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class EndpointServiceImpl implements EndpoinService {
+public class EndpointServiceImpl implements EndpointService {
     private final EndpointRepository repository;
     private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 

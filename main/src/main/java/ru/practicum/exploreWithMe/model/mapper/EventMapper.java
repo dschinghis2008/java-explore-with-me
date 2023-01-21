@@ -54,6 +54,21 @@ public class EventMapper {
         return eventShortDto;
     }
 
+    public EventShortDto toShortFromFull(EventFullDto eventFullDto){
+        EventShortDto eventShortDto = new EventShortDto();
+        eventShortDto.setId(eventFullDto.getId());
+        eventShortDto.setAnnotation(eventFullDto.getAnnotation());
+        eventShortDto.setTitle(eventFullDto.getTitle());
+        eventShortDto.setEventDate(eventFullDto.getEventDate());
+        eventShortDto.setPaid(eventFullDto.getPaid());
+        eventShortDto.setCategory(eventFullDto.getCategory().getId());
+        eventShortDto.setInitiator(eventFullDto.getInitiator());
+        eventShortDto.setConfirmedRequests(eventFullDto.getConfirmedRequests());
+        eventShortDto.setViews(eventFullDto.getViews());
+
+        return eventShortDto;
+    }
+
     public EventUserDto toUserDto(Event event) {
         EventUserDto eventDto = new EventUserDto();
 
@@ -79,9 +94,33 @@ public class EventMapper {
         return eventDto;
     }
 
-    public Event toEventFromInDto(EventInDto inDto) {
+    public Event toEventFromNewDto(EventNewDto inDto) {
         Event event = new Event();
 
+        Category category = new Category();
+        category.setId(inDto.getCategory());
+        event.setAnnotation(inDto.getAnnotation());
+        event.setTitle(inDto.getTitle());
+        event.setDescription(inDto.getDescription());
+        event.setEventDate(inDto.getEventDate());
+        event.setPaid(inDto.getPaid());
+        event.setParticipantLimit(inDto.getParticipantLimit());
+        if (inDto.getRequestModeration() == null) {
+            inDto.setRequestModeration(false);
+        }
+
+        if (inDto.getLocation() != null) {
+            event.setLatitude(inDto.getLocation().getLat());
+            event.setLongitude(inDto.getLocation().getLon());
+        }
+
+        event.setRequestModeration(inDto.getRequestModeration());
+        event.setCategory(category);
+        return event;
+    }
+
+    public Event toEventFromUpdDto(EventUpdDto inDto) {
+        Event event = new Event();
         Category category = new Category();
         category.setId(inDto.getCategory());
         event.setId(inDto.getEventId());
@@ -102,7 +141,6 @@ public class EventMapper {
 
         event.setRequestModeration(inDto.getRequestModeration());
         event.setCategory(category);
-        event.setInitiator(userMapper.toUser(inDto.getInitiator()));
         return event;
     }
 

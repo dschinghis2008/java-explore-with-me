@@ -10,7 +10,6 @@ import ru.practicum.exploreWithMe.model.dto.*;
 import ru.practicum.exploreWithMe.model.mapper.EventMapper;
 import ru.practicum.exploreWithMe.service.EventService;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
@@ -49,18 +48,18 @@ public class EventAdmController {
                                        @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
                                        @RequestParam(defaultValue = "10") @Positive Integer size) {
 
-        List<Event> events = eventService.getEventsAdm(usersId, states, catId, rangeStart, rangeEnd, from, size);
+        List<EventDto> dtos = eventService.getEventsAdm(usersId, states, catId, rangeStart, rangeEnd, from, size);
 
         log.info("====>>>>EVENT CTRL before eventService: usersId=/{}/, states=/{}/, catId=/{}/, dtStart=/{}/, " +
                         "dtEnd=/{}/, from=/{}/, size=/{}/",
                 usersId, states, catId, rangeStart, rangeEnd, from, size);
 
-        return eventMapper.toDtos(events);
+        return dtos;
     }
 
     @PutMapping("/admin/events/{eventId}")
-    public EventFullDto updateAdm(@PathVariable long eventId, @RequestBody @Valid EventInDto newDto) {
-        return eventMapper.toFullDto(eventService.updateAdm(eventId, eventMapper.toEventFromInDto(newDto)));
+    public EventFullDto updateAdm(@PathVariable long eventId, @RequestBody EventUpdDto updDto) {
+        return eventMapper.toFullDto(eventService.updateAdm(eventId, eventMapper.toEventFromUpdDto(updDto)));
     }
 
 }

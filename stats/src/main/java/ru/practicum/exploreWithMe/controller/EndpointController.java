@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.exploreWithMe.model.EndpointHitDto;
 import ru.practicum.exploreWithMe.model.Mapper;
 import ru.practicum.exploreWithMe.model.ViewStats;
-import ru.practicum.exploreWithMe.service.EndpointServiceImpl;
+import ru.practicum.exploreWithMe.service.EndpointService;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class EndpointController {
-    private final EndpointServiceImpl endpointService;
+    private final EndpointService endpointService;
     private final Mapper mapper;
 
     @PostMapping("/hit")

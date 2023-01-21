@@ -9,6 +9,12 @@ import ru.practicum.exploreWithMe.model.Status;
 import java.util.List;
 
 public interface RequestRepository extends JpaRepository<Request, Long> {
+
+    @Query("select r from Request r where r.requester.id = :requesterId and r.id = :id")
+    Request findByRequesterIdAndId(Long requesterId, Long id);
+
+    @Query("select r from Request r where r.requester.id = :requesterId and r.event.id = :eventId")
+    Request findByRequesterIdAndEventId(Long requesterId, Long eventId);
     @Query("select r from Request r where r.requester.id = :requester")
     List<Request> findAllByRequesterOrderByCreated(Long requester, Pageable pageable);
 

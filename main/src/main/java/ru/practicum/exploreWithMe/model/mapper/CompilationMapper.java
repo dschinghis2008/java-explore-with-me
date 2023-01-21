@@ -27,9 +27,8 @@ public class CompilationMapper {
 
     public Compilation toCompilation(CompilationInDto compilationDto) {
         Compilation compilation = new Compilation();
-        compilation.setId(compilationDto.getId());
         compilation.setTitle(compilationDto.getTitle());
-        compilation.setPinned(compilationDto.getPinned());
+        compilation.setPinned(compilationDto.isPinned());
         return compilation;
     }
 
