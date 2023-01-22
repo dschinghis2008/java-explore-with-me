@@ -17,20 +17,19 @@ import java.util.List;
 @Slf4j
 public class ErrorHandler {
 
-    @ExceptionHandler(value = {Throwable.class, HttpException.class, PersistenceException.class})
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorBody handleThrowable(Throwable e, HttpException eh , PersistenceException ep) {
-        log.info("--==>>REST Unchecked Throwable-Htpp-Persist exception: /{}/, ",
-                e.getMessage()/* + eh.getMessage() + ep.getMessage()*/);
+    public ErrorBody handleThroableException(Throwable e) {
+        log.info("--==>>REST Throwable: /{}/", e.getMessage());
         return new ErrorBody(HttpStatus.INTERNAL_SERVER_ERROR, List.of("unchecked error"));
     }
 
-    /*@ExceptionHandler(value = {HttpException.class, PersistenceException.class})
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorBody handleHttpException(HttpException e, PersistenceException ep) {
-        log.info("--==>>REST Http exception: /{}/", e.getMessage());
-        return new ErrorBody(HttpStatus.BAD_REQUEST, List.of("error on try add / update entity"));
-    }*/
+    public ErrorBody handleThrowable(Exception e) {
+        log.info("--==>>REST exception: /{}/, ", e.getMessage());
+        return new ErrorBody(HttpStatus.BAD_REQUEST, List.of("unchecked error"));
+    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)

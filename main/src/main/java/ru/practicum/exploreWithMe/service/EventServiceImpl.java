@@ -6,8 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -18,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.exploreWithMe.exception.InvalidDataException;
 import ru.practicum.exploreWithMe.exception.NotFoundException;
 import ru.practicum.exploreWithMe.model.*;
+import ru.practicum.exploreWithMe.model.QEvent;
 import ru.practicum.exploreWithMe.model.dto.*;
 import ru.practicum.exploreWithMe.model.mapper.EventMapper;
 import ru.practicum.exploreWithMe.repository.CategoryRepository;
@@ -134,8 +133,8 @@ public class EventServiceImpl implements EventService {
         events = eventRepository.findAll(predicate, pageable).getContent();
         log.info("-=>>EV_SERV_ADM events=/{}/", events.toString());
 
-        List<EventsCountConfirmed> countConfirm = getConfirmed(events);
-        log.info("-=>>EV_SERV countConfirm=/{}/", countConfirm.size());
+        List<EventsCountConfirmed> countsConfirm = getConfirmed(events);
+        log.info("-=>>EV_SERV countConfirm=/{}/", countsConfirm.size());
 
         List<EventDto> dtos = events.stream().map(eventMapper::toDto).collect(Collectors.toList());
         ViewStatsDto[] viewStatsDtos = webClient.getViews(dtos.toArray(new EventDto[0]));
@@ -148,7 +147,7 @@ public class EventServiceImpl implements EventService {
                     .forEach(eventFullDto -> eventFullDto.setViews(Math.toIntExact(view.getHits())));
         }
 
-        for (EventsCountConfirmed eventsCount : countConfirm) {
+        for (EventsCountConfirmed eventsCount : countsConfirm) {
             dtos.stream().filter(eventDto -> eventDto.getId().equals(eventsCount.getId()))
                     .forEach(eventDto -> eventDto.setConfirmedRequests(eventsCount.getCount()));
         }
@@ -186,8 +185,8 @@ public class EventServiceImpl implements EventService {
         events = eventRepository.findAll(predicate, pageable).getContent();
         log.info("-=>>EV_SERV events=/{}/", events.get(0).toString());
 
-        List<EventsCountConfirmed> countConfirm = getConfirmed(events);
-        log.info("-=>>EV_SERV countConfirm=/{}/", countConfirm.size());
+        List<EventsCountConfirmed> countsConfirm = getConfirmed(events);
+        log.info("-=>>EV_SERV countsConfirm=/{}/", countsConfirm.size());
 
         List<EventFullDto> fullDtos = events.stream().map(eventMapper::toFullDto).collect(Collectors.toList());
         webClient.addToStatistic(httpServletRequest);
@@ -201,7 +200,7 @@ public class EventServiceImpl implements EventService {
                     .forEach(eventShortDto -> eventShortDto.setViews(Math.toIntExact(view.getHits())));
         }
 
-        for (EventsCountConfirmed eventsCount : countConfirm) {
+        for (EventsCountConfirmed eventsCount : countsConfirm) {
             fullDtos.stream().filter(eventFullDto -> eventFullDto.getId().equals(eventsCount.getId()))
                     .forEach(eventFullDto -> eventFullDto.setConfirmedRequests(eventsCount.getCount()));
         }
@@ -245,8 +244,10 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventDto> getByUser(long id, Integer from, Integer size) {
+
         Pageable pageable = PageRequest.of(from, size);
-        List<EventDto> dtos = eventRepository.findAllByInitiatorId(id, pageable).getContent().stream()
+        List<Event> events = eventRepository.findAllByInitiatorId(id, pageable).getContent();
+                List<EventDto> dtos = events.stream()
                 .map(eventMapper::toDto)
                 .collect(Collectors.toList());
 
@@ -259,6 +260,13 @@ public class EventServiceImpl implements EventService {
                     .filter(eventDto -> Objects.equals(eventDto.getId(), viewId))
                     .forEach(eventDto -> eventDto.setViews(Math.toIntExact(view.getHits())));
         }
+
+        List<EventsCountConfirmed> countsConfirm = getConfirmed(events);
+        for (EventsCountConfirmed eventsCount : countsConfirm) {
+            dtos.stream().filter(e -> e.getId().equals(eventsCount.getId()))
+                    .forEach(e -> e.setConfirmedRequests(eventsCount.getCount()));
+        }
+
         log.info("--==>>EVENTSERV query events by user id=/{}/", id);
         return dtos;
     }
@@ -292,14 +300,21 @@ public class EventServiceImpl implements EventService {
         if (event.getEventDate() != null) {
             eventUpd.setEventDate(event.getEventDate());
         }
-        if (event.getLatitude() != 0) {
+        if (event.getEventDate() != null) {
+            eventUpd.setEventDate(event.getEventDate());
+        }
+        if (event.getLatitude() != null) {
             eventUpd.setLatitude(event.getLatitude());
         }
-        if (event.getLongitude() != 0) {
+        if (event.getLongitude() != null) {
             eventUpd.setLongitude(event.getLongitude());
         }
-        eventUpd.setPaid(event.getPaid());
-        eventUpd.setParticipantLimit(event.getParticipantLimit());
+        if (event.getPaid() != null) {
+            eventUpd.setPaid(event.getPaid());
+        }
+        if (event.getParticipantLimit() != null) {
+            eventUpd.setParticipantLimit(event.getParticipantLimit());
+        }
         if (event.getPublishedOn() != null) {
             eventUpd.setPublishedOn(event.getPublishedOn());
         }
@@ -339,19 +354,23 @@ public class EventServiceImpl implements EventService {
         if (event.getDescription() != null && !event.getAnnotation().isBlank()) {
             eventUpd.setDescription(event.getDescription());
         }
-        if (event.getCreatedOn() != null) {
-            eventUpd.setCreatedOn(event.getCreatedOn());
-        }
+
         if (event.getEventDate() != null) {
             eventUpd.setEventDate(event.getEventDate());
         }
-        eventUpd.setLatitude(event.getLatitude());
-        eventUpd.setLongitude(event.getLongitude());
-        eventUpd.setPaid(event.getPaid());
-        eventUpd.setParticipantLimit(event.getParticipantLimit());
-        if (event.getPublishedOn() != null) {
-            eventUpd.setPublishedOn(event.getPublishedOn());
+        if (event.getLatitude() != null) {
+            eventUpd.setLatitude(event.getLatitude());
         }
+        if (event.getLongitude() != null) {
+            eventUpd.setLongitude(event.getLongitude());
+        }
+        if (event.getPaid() != null) {
+            eventUpd.setPaid(event.getPaid());
+        }
+        if (event.getParticipantLimit() != null) {
+            eventUpd.setParticipantLimit(event.getParticipantLimit());
+        }
+
         eventUpd.setRequestModeration(event.getRequestModeration());
         if (event.getState() != null) {
             eventUpd.setState(event.getState());
@@ -359,9 +378,7 @@ public class EventServiceImpl implements EventService {
         if (event.getCategory() != null) {
             eventUpd.setCategory(category);
         }
-        if (event.getInitiator() != null) {
-            eventUpd.setInitiator(event.getInitiator());
-        }
+
         return eventUpd;
     }
 

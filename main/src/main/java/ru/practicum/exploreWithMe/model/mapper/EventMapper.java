@@ -54,7 +54,7 @@ public class EventMapper {
         return eventShortDto;
     }
 
-    public EventShortDto toShortFromFull(EventFullDto eventFullDto){
+    public EventShortDto toShortFromFull(EventFullDto eventFullDto) {
         EventShortDto eventShortDto = new EventShortDto();
         eventShortDto.setId(eventFullDto.getId());
         eventShortDto.setAnnotation(eventFullDto.getAnnotation());
@@ -114,6 +114,25 @@ public class EventMapper {
             event.setLongitude(inDto.getLocation().getLon());
         }
 
+        event.setRequestModeration(inDto.getRequestModeration());
+        event.setCategory(category);
+        return event;
+    }
+
+    public Event toEventFromAdmDto(EventAdmDto inDto) {
+        Event event = new Event();
+        Category category = new Category();
+        category.setId(inDto.getCategory());
+        event.setAnnotation(inDto.getAnnotation());
+        event.setTitle(inDto.getTitle());
+        event.setDescription(inDto.getDescription());
+        event.setEventDate(inDto.getEventDate());
+        event.setPaid(inDto.getPaid());
+        event.setParticipantLimit(inDto.getParticipantLimit());
+        if (inDto.getLocation() != null) {
+            event.setLatitude(inDto.getLocation().getLat());
+            event.setLongitude(inDto.getLocation().getLon());
+        }
         event.setRequestModeration(inDto.getRequestModeration());
         event.setCategory(category);
         return event;

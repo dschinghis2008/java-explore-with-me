@@ -33,22 +33,23 @@ public class Event {
     @Column(name = "dt", nullable = false)
     private LocalDateTime eventDate;
 
-    @Column(name = "event_lat")
-    private double latitude;
+    @Column(name = "event_lat", nullable = false)
+    private Double latitude;
 
-    @Column(name = "event_lon")
-    private double longitude;
+    @Column(name = "event_lon", nullable = false)
+    private Double longitude;
 
-    private boolean paid;
+    @Column(nullable = false)
+    private Boolean paid;
 
-    @Column(name = "participant_max")
-    private int participantLimit;
+    @Column(name = "participant_max", nullable = false)
+    private Integer participantLimit;
 
     @Column(name = "published_dt")
     private LocalDateTime publishedOn;
 
-    @Column(name = "request_moderation")
-    private boolean requestModeration;
+    @Column(name = "request_moderation", nullable = false)
+    private Boolean requestModeration;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -61,8 +62,9 @@ public class Event {
     private User initiator;
 
     public Event(Long id, String annotation, String title, String description, LocalDateTime createdOn,
-                 LocalDateTime eventDate, Double latitude, Double longitude, boolean paid, int participantLimit,
-                 LocalDateTime publishedOn, boolean requestModeration, EventState state, Category category, User initiator) {
+                 LocalDateTime eventDate, Double latitude, Double longitude, Boolean paid, Integer participantLimit,
+                 LocalDateTime publishedOn, Boolean requestModeration, EventState state,
+                 Category category, User initiator) {
         this.id = id;
         this.annotation = annotation;
         this.title = title;
@@ -80,11 +82,4 @@ public class Event {
         this.initiator = initiator;
     }
 
-    public boolean getPaid() {
-        return paid;
-    }
-
-    public boolean getRequestModeration() {
-        return requestModeration;
-    }
 }

@@ -2,7 +2,6 @@ package ru.practicum.exploreWithMe.controller.adm;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.exploreWithMe.model.dto.CompilationDto;
 import ru.practicum.exploreWithMe.model.dto.CompilationInDto;
@@ -14,7 +13,6 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@Validated
 public class CompilationAdmController {
     private final CompilationService compilationService;
     private final CompilationMapper compilationMapper;

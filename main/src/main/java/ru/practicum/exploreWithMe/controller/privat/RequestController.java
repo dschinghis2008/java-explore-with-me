@@ -7,6 +7,8 @@ import ru.practicum.exploreWithMe.model.dto.RequestDto;
 import ru.practicum.exploreWithMe.model.mapper.RequestMapper;
 import ru.practicum.exploreWithMe.service.RequestService;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
@@ -20,7 +22,7 @@ public class RequestController {
     private final RequestMapper requestMapper;
 
     @PostMapping("/users/{userId}/requests")
-    public RequestDto add(@PathVariable long userId, @RequestParam long eventId) {
+    public RequestDto add(@PathVariable long userId, @RequestParam @Valid @NotNull long eventId) {
         return requestMapper.toDto(requestService.add(userId, eventId));
     }
 

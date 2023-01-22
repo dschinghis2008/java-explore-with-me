@@ -3,7 +3,6 @@ package ru.practicum.exploreWithMe.controller.adm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.exploreWithMe.model.User;
 import ru.practicum.exploreWithMe.model.dto.UserDto;
 import ru.practicum.exploreWithMe.model.mapper.UserMapper;
 import ru.practicum.exploreWithMe.service.UserService;
@@ -11,9 +10,6 @@ import ru.practicum.exploreWithMe.service.UserService;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 

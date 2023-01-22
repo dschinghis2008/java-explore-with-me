@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.exploreWithMe.model.Event;
 import ru.practicum.exploreWithMe.model.dto.*;
 import ru.practicum.exploreWithMe.model.mapper.EventMapper;
 import ru.practicum.exploreWithMe.service.EventService;
@@ -58,8 +57,8 @@ public class EventAdmController {
     }
 
     @PutMapping("/admin/events/{eventId}")
-    public EventFullDto updateAdm(@PathVariable long eventId, @RequestBody EventUpdDto updDto) {
-        return eventMapper.toFullDto(eventService.updateAdm(eventId, eventMapper.toEventFromUpdDto(updDto)));
+    public EventFullDto updateAdm(@PathVariable long eventId, @RequestBody EventAdmDto updDto) {
+        return eventMapper.toFullDto(eventService.updateAdm(eventId, eventMapper.toEventFromAdmDto(updDto)));
     }
 
 }
