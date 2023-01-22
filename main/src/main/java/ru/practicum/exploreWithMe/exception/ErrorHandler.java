@@ -1,7 +1,6 @@
 package ru.practicum.exploreWithMe.exception;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import javax.persistence.PersistenceException;
 import java.util.List;
 
 @RestControllerAdvice("ru.practicum.exploreWithMe.controller")

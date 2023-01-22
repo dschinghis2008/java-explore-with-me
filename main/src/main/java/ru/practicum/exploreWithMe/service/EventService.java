@@ -2,7 +2,6 @@ package ru.practicum.exploreWithMe.service;
 
 import ru.practicum.exploreWithMe.model.Event;
 import ru.practicum.exploreWithMe.model.dto.EventDto;
-import ru.practicum.exploreWithMe.model.dto.EventFullDto;
 import ru.practicum.exploreWithMe.model.dto.EventShortDto;
 import ru.practicum.exploreWithMe.model.dto.EventUserDto;
 
