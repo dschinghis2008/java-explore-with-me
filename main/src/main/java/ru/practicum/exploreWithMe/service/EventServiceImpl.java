@@ -130,28 +130,30 @@ public class EventServiceImpl implements EventService {
         }
 
         log.info("--===>>>EVENTSERV ADMIN query events predicate= /{}/", predicate.toString());
-        events = eventRepository.findAll(predicate, pageable).getContent();
+        events = eventRepository.findAll(predicate, pageable).toList();
         log.info("-=>>EV_SERV_ADM events=/{}/", events.toString());
 
         List<EventsCountConfirmed> countsConfirm = getConfirmed(events);
         log.info("-=>>EV_SERV countConfirm=/{}/", countsConfirm.size());
 
-        List<EventDto> dtos = events.stream().map(eventMapper::toDto).collect(Collectors.toList());
+        List<EventDto> dtos = events.stream()
+                .map(eventMapper::toDto)
+                .collect(Collectors.toList());
         ViewStatsDto[] viewStatsDtos = webClient.getViews(dtos.toArray(new EventDto[0]));
         for (ViewStatsDto view : viewStatsDtos) {
             log.info("--==>>substr uri = /{}/",
                     view.getUri().substring(view.getUri().lastIndexOf("/") + 1));
             Long viewId = Long.parseLong(view.getUri().substring(view.getUri().lastIndexOf("/") + 1));
             dtos.stream()
-                    .filter(eventFullDto -> Objects.equals(eventFullDto.getId(), viewId))
-                    .forEach(eventFullDto -> eventFullDto.setViews(Math.toIntExact(view.getHits())));
+                    .filter(e -> Objects.equals(e.getId(), viewId))
+                    .forEach(e -> e.setViews(Math.toIntExact(view.getHits())));
         }
 
         for (EventsCountConfirmed eventsCount : countsConfirm) {
             dtos.stream().filter(eventDto -> eventDto.getId().equals(eventsCount.getId()))
                     .forEach(eventDto -> eventDto.setConfirmedRequests(eventsCount.getCount()));
         }
-
+        dtos.sort(Comparator.comparing(EventDto::getId).reversed());
         return dtos;
     }
 
