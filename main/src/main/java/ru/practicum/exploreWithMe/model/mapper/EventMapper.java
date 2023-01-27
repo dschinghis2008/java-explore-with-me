@@ -41,6 +41,31 @@ public class EventMapper {
         return eventDto;
     }
 
+    public Event toEvent(EventDto dto) {
+        Event event = new Event();
+
+        Category category = new Category();
+        category.setId(dto.getCategory());
+        event.setAnnotation(dto.getAnnotation());
+        event.setTitle(dto.getTitle());
+        event.setDescription(dto.getDescription());
+        event.setEventDate(dto.getEventDate());
+        event.setPaid(dto.getPaid());
+        event.setParticipantLimit(dto.getParticipantLimit());
+        if (dto.getRequestModeration() == null) {
+            dto.setRequestModeration(false);
+        }
+
+        if (dto.getLocation() != null) {
+            event.setLatitude(dto.getLocation().getLat());
+            event.setLongitude(dto.getLocation().getLon());
+        }
+
+        event.setRequestModeration(dto.getRequestModeration());
+        event.setCategory(category);
+        return event;
+    }
+
     public EventShortDto toShortDto(Event event) {
         EventShortDto eventShortDto = new EventShortDto();
         eventShortDto.setId(event.getId());
