@@ -1,8 +1,10 @@
 package ru.practicum.exploreWithMe.controller.privat;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.exploreWithMe.model.Comment;
 import ru.practicum.exploreWithMe.model.dto.CommentDto;
 import ru.practicum.exploreWithMe.model.dto.validation.Create;
 import ru.practicum.exploreWithMe.model.mapper.CommentMapper;
@@ -10,6 +12,7 @@ import ru.practicum.exploreWithMe.service.CommentService;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping(path = "/comments/users")
 public class CommentPrivateController {
     private final CommentService commentService;
@@ -17,7 +20,11 @@ public class CommentPrivateController {
 
     @PostMapping
     public CommentDto add(@RequestBody @Validated(Create.class) CommentDto dto) {
-        return commentMapper.toDto(commentService.add(commentMapper.toComment(dto)));
+        log.info("--==>>COMMENT_REST dto=/{}/", dto);
+        Comment comment = commentMapper.toComment(dto);
+        log.info("--==>>COMMENT_REST comment(textt,author,event)=/{},{},{}/",
+                comment.getText(),comment.getAuthor().getId(),comment.getEvent().getId());
+        return commentMapper.toDto(commentService.add(comment));
     }
 
     @PatchMapping("/{commentId}/user/{authorId}")

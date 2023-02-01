@@ -15,9 +15,9 @@ public class CommentDto {
     @NotBlank(groups = {Update.class, Create.class})
     private String text;
 
-    @NotBlank(groups = {Create.class})
+    @NotNull(groups = {Create.class})
     private Long author;
 
-    @NotBlank(groups = {Create.class})
+    @NotNull(groups = {Create.class})
     private Long event;
 }
