@@ -1,32 +1,33 @@
 package ru.practicum.exploreWithMe.model.mapper;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.exploreWithMe.model.Comment;
+import ru.practicum.exploreWithMe.model.Event;
+import ru.practicum.exploreWithMe.model.User;
 import ru.practicum.exploreWithMe.model.dto.CommentDto;
 
 @Component
-@RequiredArgsConstructor
 public class CommentMapper {
-
-    private final UserMapper userMapper;
-    private final EventMapper eventMapper;
 
     public CommentDto toDto(Comment comment){
         CommentDto commentDto = new CommentDto();
         commentDto.setId(commentDto.getId());
         commentDto.setText(commentDto.getText());
-        commentDto.setAuthor(userMapper.toDto(comment.getAuthor()));
-        commentDto.setEvent(eventMapper.toDto(comment.getEvent()));
+        commentDto.setAuthor(comment.getAuthor().getId());
+        commentDto.setEvent(comment.getEvent().getId());
         return commentDto;
     }
 
     public Comment toComment(CommentDto commentDto){
         Comment comment = new Comment();
+        Event event = new Event();
+        User user = new User();
+        event.setId(commentDto.getEvent());
+        user.setId(commentDto.getAuthor());
         comment.setId(commentDto.getId());
         comment.setText(commentDto.getText());
-        comment.setAuthor(userMapper.toUser(commentDto.getAuthor()));
-        comment.setEvent(eventMapper.toEvent(commentDto.getEvent()));
+        comment.setAuthor(user);
+        comment.setEvent(event);
         return comment;
     }
 }

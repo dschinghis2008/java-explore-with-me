@@ -34,7 +34,7 @@ public class Comment {
     @Column(nullable = false)
     private Boolean visible;
 
-    public Comment(Long id, String text, User author, Event event, LocalDateTime created, boolean visible) {
+    public Comment(Long id, String text, User author, Event event, LocalDateTime created, Boolean visible) {
         this.id = id;
         this.text = text;
         this.author = author;

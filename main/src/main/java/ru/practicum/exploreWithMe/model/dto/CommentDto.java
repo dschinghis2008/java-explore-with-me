@@ -16,8 +16,8 @@ public class CommentDto {
     private String text;
 
     @NotBlank(groups = {Create.class})
-    private UserDto author;
+    private Long author;
 
     @NotBlank(groups = {Create.class})
-    private EventDto event;
+    private Long event;
 }

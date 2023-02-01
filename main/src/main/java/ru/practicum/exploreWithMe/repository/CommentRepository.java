@@ -1,8 +1,11 @@
 package ru.practicum.exploreWithMe.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.exploreWithMe.model.Comment;
+import ru.practicum.exploreWithMe.model.Event;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
@@ -27,4 +30,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             "        select 0 u1, 0 u2, 0 u3, count(id) u4 from events e " +
             "        where e.id=:eventId and e.state='PUBLISHED') a1) a2")
     byte foundRoleOfCommentator(Long userId, Long eventId);
+
+    Page<Comment> findAllByEvent(Event event, Pageable pageable);
 }

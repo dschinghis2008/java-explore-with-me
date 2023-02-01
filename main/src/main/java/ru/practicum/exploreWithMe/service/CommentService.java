@@ -1,16 +1,15 @@
 package ru.practicum.exploreWithMe.service;
 
+import org.springframework.data.domain.Pageable;
 import ru.practicum.exploreWithMe.model.Comment;
-import ru.practicum.exploreWithMe.model.Event;
-import ru.practicum.exploreWithMe.model.User;
 
 import java.util.List;
 
 public interface CommentService {
-    Comment add(User user, Event event);
-    Comment update(Comment comment, Long id);
-    Comment getById(Long id);
-    List<Comment> getAllByEventId(Long eventId);
-    Comment updVisible(Long id);
-    void remove(Long id);
+    Comment add(Comment comment);
+    Comment update(long commentId, long authorId,  String text);
+    Comment getById(long id);
+    List<Comment> getAllByEventId(long eventId, int from, int size);
+    Comment updVisible(long commentId, long userId, boolean visible, boolean isAdm);
+    void remove(long commentId, long authorId, boolean isAdm);
 }
