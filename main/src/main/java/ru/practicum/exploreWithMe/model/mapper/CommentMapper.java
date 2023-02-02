@@ -5,6 +5,7 @@ import ru.practicum.exploreWithMe.model.Comment;
 import ru.practicum.exploreWithMe.model.Event;
 import ru.practicum.exploreWithMe.model.User;
 import ru.practicum.exploreWithMe.model.dto.CommentDto;
+import ru.practicum.exploreWithMe.model.dto.CommentOutDto;
 
 @Component
 public class CommentMapper {
@@ -15,6 +16,17 @@ public class CommentMapper {
         commentDto.setText(comment.getText());
         commentDto.setAuthor(comment.getAuthor().getId());
         commentDto.setEvent(comment.getEvent().getId());
+        return commentDto;
+    }
+
+    public CommentOutDto toOutDto(Comment comment){
+        CommentOutDto commentDto = new CommentOutDto();
+        commentDto.setId(comment.getId());
+        commentDto.setText(comment.getText());
+        commentDto.setAuthorId(comment.getAuthor().getId());
+        commentDto.setEventId(comment.getEvent().getId());
+        commentDto.setCreated(comment.getCreated());
+        commentDto.setVisible(comment.getVisible());
         return commentDto;
     }
 

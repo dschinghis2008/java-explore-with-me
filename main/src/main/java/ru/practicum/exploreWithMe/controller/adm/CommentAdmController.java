@@ -2,7 +2,7 @@ package ru.practicum.exploreWithMe.controller.adm;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.exploreWithMe.model.dto.CommentDto;
+import ru.practicum.exploreWithMe.model.dto.CommentOutDto;
 import ru.practicum.exploreWithMe.model.mapper.CommentMapper;
 import ru.practicum.exploreWithMe.service.CommentService;
 
@@ -14,8 +14,8 @@ public class CommentAdmController {
     private final CommentMapper commentMapper;
 
     @PatchMapping("/{commentId}")
-    public CommentDto updVisible(@PathVariable long commentId, @RequestParam boolean visible){
-        return commentMapper.toDto(commentService.updVisible(commentId, 0, visible, true));
+    public CommentOutDto updVisible(@PathVariable long commentId, @RequestParam boolean visible){
+        return commentMapper.toOutDto(commentService.updVisible(commentId, 0, visible, true));
     }
 
     @DeleteMapping("/{commentId}")

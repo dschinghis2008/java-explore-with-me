@@ -3,7 +3,7 @@ package ru.practicum.exploreWithMe.controller.pub;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.exploreWithMe.model.dto.CommentDto;
+import ru.practicum.exploreWithMe.model.dto.CommentOutDto;
 import ru.practicum.exploreWithMe.model.mapper.CommentMapper;
 import ru.practicum.exploreWithMe.service.CommentService;
 
@@ -21,16 +21,16 @@ public class CommentController {
     private final CommentMapper commentMapper;
 
     @GetMapping("/comment/{id}")
-    public CommentDto getById(@PathVariable long id){
-        return commentMapper.toDto(commentService.getById(id));
+    public CommentOutDto getById(@PathVariable long id){
+        return commentMapper.toOutDto(commentService.getById(id));
     }
 
     @GetMapping
-    public List<CommentDto> getAllByEvent(@RequestParam long eventId,
+    public List<CommentOutDto> getAllByEvent(@RequestParam long eventId,
                                           @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
                                           @RequestParam(defaultValue = "10") @Positive Integer size){
         return commentService.getAllByEventId(eventId, from, size).stream()
-                .map(commentMapper::toDto)
+                .map(commentMapper::toOutDto)
                 .collect(Collectors.toList());
     }
 }
