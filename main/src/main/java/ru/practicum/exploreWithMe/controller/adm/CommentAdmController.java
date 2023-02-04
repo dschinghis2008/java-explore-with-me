@@ -13,7 +13,7 @@ public class CommentAdmController {
     private final CommentService commentService;
     private final CommentMapper commentMapper;
 
-    @PatchMapping("/{commentId}")
+    @PatchMapping("/{commentId}/visible")
     public CommentOutDto updVisible(@PathVariable long commentId, @RequestParam boolean visible){
         return commentMapper.toOutDto(commentService.updVisible(commentId, 0, visible, true));
     }

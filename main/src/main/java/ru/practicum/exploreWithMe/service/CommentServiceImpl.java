@@ -11,7 +11,6 @@ import ru.practicum.exploreWithMe.exception.NotFoundException;
 import ru.practicum.exploreWithMe.model.Comment;
 import ru.practicum.exploreWithMe.model.Event;
 import ru.practicum.exploreWithMe.model.User;
-import ru.practicum.exploreWithMe.model.dto.CommentDto;
 import ru.practicum.exploreWithMe.repository.CommentRepository;
 import ru.practicum.exploreWithMe.repository.EventRepository;
 import ru.practicum.exploreWithMe.repository.UserRepository;
