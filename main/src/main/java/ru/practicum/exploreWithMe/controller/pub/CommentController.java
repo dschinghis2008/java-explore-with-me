@@ -20,7 +20,7 @@ public class CommentController {
     private final CommentService commentService;
     private final CommentMapper commentMapper;
 
-    @GetMapping("/comment/{id}")
+    @GetMapping("/{id}")
     public CommentOutDto getById(@PathVariable long id){
         return commentMapper.toOutDto(commentService.getById(id));
     }

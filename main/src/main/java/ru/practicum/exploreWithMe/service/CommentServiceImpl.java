@@ -11,6 +11,7 @@ import ru.practicum.exploreWithMe.exception.NotFoundException;
 import ru.practicum.exploreWithMe.model.Comment;
 import ru.practicum.exploreWithMe.model.Event;
 import ru.practicum.exploreWithMe.model.User;
+import ru.practicum.exploreWithMe.model.dto.CommentDto;
 import ru.practicum.exploreWithMe.repository.CommentRepository;
 import ru.practicum.exploreWithMe.repository.EventRepository;
 import ru.practicum.exploreWithMe.repository.UserRepository;
@@ -40,7 +41,7 @@ public class CommentServiceImpl implements CommentService {
             case 0:
             case 1:
             case 2:
-                log.info("--==>>COMMENT_SRV: Not found event or/and user");
+                log.info("--==>>COMMENT_SRV ADD: Not found event or/and user");
                 throw new NotFoundException(HttpStatus.NOT_FOUND);
             case 3:
                 comment.setVisible(false);
@@ -56,15 +57,15 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public Comment update(long commentId, long authorId, String text) {
-        Comment comment = commentRepository.findById(commentId)
+    public Comment update(long authorId, Comment comment) {
+        Comment commentUpd = commentRepository.findById(comment.getId())
                 .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
         if (!comment.getAuthor().getId().equals(authorId)) {
             throw new NotFoundException(HttpStatus.NOT_FOUND);
         }
-        comment.setText(text);
-        log.info("--==>>COMMENT_SRV: update comment id=/{}/, text=/{}/", commentId, text);
-        return comment;
+        commentUpd.setText(comment.getText());
+        log.info("--==>>COMMENT_SRV: update comment id=/{}/, text=/{}/", commentUpd.getId(), commentUpd.getText());
+        return commentUpd;
     }
 
     @Override
@@ -96,7 +97,15 @@ public class CommentServiceImpl implements CommentService {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
         Pageable pageable = PageRequest.of(from, size);
         log.info("--==>>COMMENT_SERV query all comments on eventId=/{}/", eventId);
-        return commentRepository.findAllByEvent(event, pageable).getContent();
+        return commentRepository.findAllByEventOrderByCreated(event, pageable).getContent();
+    }
+
+    @Override
+    public List<Comment> getAllByAuthorId(long userId, int from, int size) {
+        User author = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
+        Pageable pageable = PageRequest.of(from, size);
+        log.info("--==>>COMMENT_SERV query all comments of user Id=/{}/", userId);
+        return commentRepository.findAllByAuthorOrderByCreated(author, pageable).getContent();
     }
 
     @Override
@@ -112,5 +121,6 @@ public class CommentServiceImpl implements CommentService {
             }
         }
         commentRepository.deleteById(commentId);
+        log.info("--==>>COMMENT_SRV delete comment /{}/", commentId);
     }
 }
