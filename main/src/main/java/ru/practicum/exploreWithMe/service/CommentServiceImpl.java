@@ -69,20 +69,20 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public Comment updVisible(long commentId, long userId, boolean visible, boolean isAdm) {
-        Comment comment = commentRepository.findById(commentId)
+    public Comment updVisible(long userId, boolean visible, boolean isAdm, Comment comment) {
+        Comment commentUpd = commentRepository.findById(comment.getId())
                 .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
         if (!isAdm) {
             if (commentRepository
-                    .foundRoleOfCommentator(userId, comment.getEvent().getId()) != 103) {
+                    .foundRoleOfCommentator(userId, commentUpd.getEvent().getId()) != 103) {
                 log.info("--==>>COMMENT_SRV пользователь не является инициатором события и запрос " +
                         "не от администратора, признак видимости коммента не может быть изменен");
                 throw new NotFoundException(HttpStatus.NOT_FOUND);
             }
         }
-        comment.setVisible(visible);
-        log.info("--==>>COMMENT_SERV coment id=/{}/ set visible=/{}/", commentId, visible);
-        return comment;
+        commentUpd.setVisible(visible);
+        log.info("--==>>COMMENT_SERV comment id=/{}/ set visible=/{}/", commentUpd.getId(), visible);
+        return commentUpd;
     }
 
     @Override

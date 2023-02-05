@@ -5394,6 +5394,141 @@
 					"response": []
 				},
 				{
+					"name": "Add new comment with invalid user id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Ответ должен содержать код статуса 404\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([404]);    \r",
+									"    pm.response.to.be.withBody;\r",
+									"    pm.response.to.be.json;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"text\":\"wrong comment\",\"author\":444,\"event\":20}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/comments/private",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"comments",
+								"private"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add new comment with invalid event id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Ответ должен содержать код статуса 404\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([404]);    \r",
+									"    pm.response.to.be.withBody;\r",
+									"    pm.response.to.be.json;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"text\":\"wrong comment\",\"author\":44,\"event\":200}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/comments/private",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"comments",
+								"private"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add new comment with invalid body",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Ответ должен содержать код статуса 400\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400]);    \r",
+									"    pm.response.to.be.withBody;\r",
+									"    pm.response.to.be.json;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"text\":\"\",\"author\":44,\"event\":20}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/comments/private",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"comments",
+								"private"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Add new participant's comment",
 					"event": [
 						{
@@ -5552,6 +5687,424 @@
 								"private",
 								"user",
 								"34"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update not own comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Ответ должен содержать код статуса 404\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([404]);    \r",
+									"    pm.response.to.be.withBody;\r",
+									"    pm.response.to.be.json;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"id\":3,\"text\":\"upd comment from initiator\",\"author\":34,\"event\":20}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/comments/private/user/340",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"comments",
+								"private",
+								"user",
+								"340"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update comment's visible",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201]);    \r",
+									"    pm.response.to.be.withBody;\r",
+									"    pm.response.to.be.json;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Test update comment from initiator of the event\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id, '\"id\" field').to.eql(1);\r",
+									"    pm.expect(jsonData.text, '\"text\" field').to.eql('new comment');\r",
+									"    pm.expect(jsonData.authorId, '\"authorId\" field').to.eql(44);\r",
+									"    pm.expect(jsonData.eventId, '\"eventId\" field').to.eql(20);\r",
+									"    pm.expect(jsonData.visible, '\"visible\" field').to.true;\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"id\":1,\"author\":44,\"event\":20}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/comments/private/user/34/visible?visible=true",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"comments",
+								"private",
+								"user",
+								"34",
+								"visible"
+							],
+							"query": [
+								{
+									"key": "visible",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update comment's visible on not own event",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Ответ должен содержать код статуса 404\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([404]);    \r",
+									"    pm.response.to.be.withBody;\r",
+									"    pm.response.to.be.json;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"id\":1,\"author\":44,\"event\":20}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/comments/private/user/340/visible?visible=true",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"comments",
+								"private",
+								"user",
+								"340",
+								"visible"
+							],
+							"query": [
+								{
+									"key": "visible",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update comment's visible from admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201]);    \r",
+									"    pm.response.to.be.withBody;\r",
+									"    pm.response.to.be.json;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Test update comment from initiator of the event\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id, '\"id\" field').to.eql(1);\r",
+									"    pm.expect(jsonData.text, '\"text\" field').to.eql('new comment');\r",
+									"    pm.expect(jsonData.authorId, '\"authorId\" field').to.eql(44);\r",
+									"    pm.expect(jsonData.eventId, '\"eventId\" field').to.eql(20);\r",
+									"    pm.expect(jsonData.visible, '\"visible\" field').to.true;\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"id\":1}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/comments/adm/visible?visible=true",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"comments",
+								"adm",
+								"visible"
+							],
+							"query": [
+								{
+									"key": "visible",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all comments of author",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+									"});\r",
+									"pm.test(\"Test get all\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.length, 'items count in total').to.eql(1);\r",
+									"    pm.expect(jsonData[0].id, 'result[0]: \"id\" field').to.eql(1);\r",
+									"    pm.expect(jsonData[0].text, 'result[0]: \"text\" field').to.eql('new comment');\r",
+									"    pm.expect(jsonData[0].visible, 'result[0]: \"visible\" field').to.true;\r",
+									"    pm.expect(jsonData[0].authorId, 'result[0]: \"authorId\" field').to.eql(44);\r",
+									"    pm.expect(jsonData[0].eventId, 'result[0]: \"eventId\" field').to.eql(20);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/comments/private/user/44",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"comments",
+								"private",
+								"user",
+								"44"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all comments on event",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+									"});\r",
+									"pm.test(\"Test get all\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.length, 'items count in total').to.eql(3);\r",
+									"    pm.expect(jsonData[0].id, 'result[0]: \"id\" field').to.eql(1);\r",
+									"    pm.expect(jsonData[0].text, 'result[0]: \"text\" field').to.eql('new comment');\r",
+									"    pm.expect(jsonData[0].visible, 'result[0]: \"visible\" field').to.true;\r",
+									"    pm.expect(jsonData[0].authorId, 'result[0]: \"authorId\" field').to.eql(44);\r",
+									"    pm.expect(jsonData[0].eventId, 'result[0]: \"eventId\" field').to.eql(20);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/comments/?eventId=20",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"comments",
+								""
+							],
+							"query": [
+								{
+									"key": "eventId",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get comment by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+									"});\r",
+									"pm.test(\"Test get all\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id, '\"id\" field').to.eql(1);\r",
+									"    pm.expect(jsonData.text, '\"text\" field').to.eql('new comment');\r",
+									"    pm.expect(jsonData.visible, '\"visible\" field').to.true;\r",
+									"    pm.expect(jsonData.authorId, '\"authorId\" field').to.eql(44);\r",
+									"    pm.expect(jsonData.eventId, '\"eventId\" field').to.eql(20);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/comments/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"comments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete comment by admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/comments/adm/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"comments",
+								"adm",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete own comment by author",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/comments/private/1/user/44",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"comments",
+								"private",
+								"1",
+								"user",
+								"44"
 							]
 						}
 					},

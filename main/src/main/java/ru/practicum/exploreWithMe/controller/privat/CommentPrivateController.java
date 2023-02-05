@@ -36,14 +36,15 @@ public class CommentPrivateController {
 
     @PatchMapping("/user/{authorId}")
     public CommentOutDto updateText(@PathVariable long authorId,
-                                    @RequestBody @Validated(Update.class) CommentDto dto) {
+                                    @RequestBody @Validated({Update.class,Create.class}) CommentDto dto) {
         return commentMapper.toOutDto(commentService.update(authorId, commentMapper.toComment(dto)));
     }
 
-    @PatchMapping("/{commentId}/user/{userId}/visible")
-    public CommentOutDto updVisible(@PathVariable long commentId,
-                                    @PathVariable long userId, @RequestParam boolean visible) {
-        return commentMapper.toOutDto(commentService.updVisible(commentId, userId, visible, false));
+    @PatchMapping("/user/{userId}/visible")
+    public CommentOutDto updVisible(@PathVariable long userId, @RequestParam boolean visible,
+                                    @RequestBody CommentDto dto) {
+        return commentMapper.toOutDto(commentService.updVisible(userId, visible, false,
+                commentMapper.toComment(dto)));
     }
 
     @GetMapping("/user/{authorId}")

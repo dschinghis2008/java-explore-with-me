@@ -12,6 +12,6 @@ public interface CommentService {
     Comment getById(long id);
     List<Comment> getAllByEventId(long eventId, int from, int size);
     List<Comment> getAllByAuthorId(long userId, int from, int size);
-    Comment updVisible(long commentId, long userId, boolean visible, boolean isAdm);
+    Comment updVisible(long userId, boolean visible, boolean isAdm, Comment comment);
     void remove(long commentId, long authorId, boolean isAdm);
 }
