@@ -36,7 +36,7 @@ public class CommentPrivateController {
 
     @PatchMapping("/user/{authorId}")
     public CommentOutDto updateText(@PathVariable long authorId,
-                                    @RequestBody @Validated({Update.class,Create.class}) CommentDto dto) {
+                                    @RequestBody @Validated({Update.class, Create.class}) CommentDto dto) {
         return commentMapper.toOutDto(commentService.update(authorId, commentMapper.toComment(dto)));
     }
 
@@ -50,7 +50,7 @@ public class CommentPrivateController {
     @GetMapping("/user/{authorId}")
     public List<CommentOutDto> getAllOfAuthor(@PathVariable long authorId,
                                               @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
-                                              @RequestParam(defaultValue = "10") @Positive Integer size){
+                                              @RequestParam(defaultValue = "10") @Positive Integer size) {
         return commentService.getAllByAuthorId(authorId, from, size).stream()
                 .map(commentMapper::toOutDto)
                 .collect(Collectors.toList());

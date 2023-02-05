@@ -15,13 +15,13 @@ public class CommentAdmController {
     private final CommentMapper commentMapper;
 
     @PatchMapping("/visible")
-    public CommentOutDto updVisible(@RequestParam boolean visible, @RequestBody CommentDto dto){
+    public CommentOutDto updVisible(@RequestParam boolean visible, @RequestBody CommentDto dto) {
         return commentMapper.toOutDto(commentService.updVisible(0, visible, true,
                 commentMapper.toComment(dto)));
     }
 
     @DeleteMapping("/{commentId}")
-    public void remove(@PathVariable long commentId){
+    public void remove(@PathVariable long commentId) {
         commentService.remove(commentId, 0, true);
     }
 }

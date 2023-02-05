@@ -10,7 +10,7 @@ import ru.practicum.exploreWithMe.model.dto.CommentOutDto;
 @Component
 public class CommentMapper {
 
-    public CommentDto toDto(Comment comment){
+    public CommentDto toDto(Comment comment) {
         CommentDto commentDto = new CommentDto();
         commentDto.setId(comment.getId());
         commentDto.setText(comment.getText());
@@ -19,7 +19,7 @@ public class CommentMapper {
         return commentDto;
     }
 
-    public CommentOutDto toOutDto(Comment comment){
+    public CommentOutDto toOutDto(Comment comment) {
         CommentOutDto commentDto = new CommentOutDto();
         commentDto.setId(comment.getId());
         commentDto.setText(comment.getText());
@@ -30,7 +30,7 @@ public class CommentMapper {
         return commentDto;
     }
 
-    public Comment toComment(CommentDto commentDto){
+    public Comment toComment(CommentDto commentDto) {
         Comment comment = new Comment();
         Event event = new Event();
         User user = new User();

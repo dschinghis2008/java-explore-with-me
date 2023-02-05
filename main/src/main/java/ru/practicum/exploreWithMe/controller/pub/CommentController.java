@@ -21,14 +21,14 @@ public class CommentController {
     private final CommentMapper commentMapper;
 
     @GetMapping("/{id}")
-    public CommentOutDto getById(@PathVariable long id){
+    public CommentOutDto getById(@PathVariable long id) {
         return commentMapper.toOutDto(commentService.getById(id));
     }
 
     @GetMapping
     public List<CommentOutDto> getAllByEvent(@RequestParam long eventId,
-                                          @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
-                                          @RequestParam(defaultValue = "10") @Positive Integer size){
+                                             @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+                                             @RequestParam(defaultValue = "10") @Positive Integer size) {
         return commentService.getAllByEventId(eventId, from, size).stream()
                 .map(commentMapper::toOutDto)
                 .collect(Collectors.toList());
