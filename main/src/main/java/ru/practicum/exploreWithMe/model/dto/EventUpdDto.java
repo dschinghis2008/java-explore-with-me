@@ -2,6 +2,7 @@ package ru.practicum.exploreWithMe.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import ru.practicum.exploreWithMe.model.StateAction;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
@@ -10,7 +11,6 @@ import java.time.LocalDateTime;
 @Data
 public class EventUpdDto {
 
-    @NotNull
     private Long eventId;
 
     private String annotation;
@@ -32,4 +32,6 @@ public class EventUpdDto {
     private Boolean requestModeration;
 
     private Long category;
+
+    private StateAction stateAction;
 }

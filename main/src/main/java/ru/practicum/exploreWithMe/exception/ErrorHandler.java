@@ -17,14 +17,14 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorBody handleThroableException(Throwable e) {
+    public ErrorBody handleThrowableException(Throwable e) {
         log.info("--==>>REST Throwable: /{}/", e.getMessage());
         return new ErrorBody(HttpStatus.INTERNAL_SERVER_ERROR, List.of("unchecked error"));
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorBody handleThrowable(Exception e) {
+    public ErrorBody handleException(Exception e) {
         log.info("--==>>REST exception: /{}/, ", e.getMessage());
         return new ErrorBody(HttpStatus.BAD_REQUEST, List.of("unchecked error"));
     }

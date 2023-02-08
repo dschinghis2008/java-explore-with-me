@@ -14,9 +14,13 @@ public class CategoryMapper {
         return categoryDto;
     }
 
-    public Category toCategory(CategoryDto categoryDto) {
+    public Category toCategory(Long id, CategoryDto categoryDto) {
         Category category = new Category();
-        category.setId(categoryDto.getId());
+        if (id != null) {
+            category.setId(id);
+        } else {
+            category.setId(categoryDto.getId());
+        }
         category.setName(categoryDto.getName());
         return category;
     }

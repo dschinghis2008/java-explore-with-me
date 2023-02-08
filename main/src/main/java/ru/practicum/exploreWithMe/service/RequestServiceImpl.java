@@ -7,14 +7,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
+import ru.practicum.exploreWithMe.exception.ConflictException;
 import ru.practicum.exploreWithMe.exception.NotFoundException;
 import ru.practicum.exploreWithMe.model.*;
+import ru.practicum.exploreWithMe.model.dto.RequestsUpd;
+import ru.practicum.exploreWithMe.model.dto.RequestsUpdResult;
+import ru.practicum.exploreWithMe.model.mapper.RequestMapper;
 import ru.practicum.exploreWithMe.repository.EventRepository;
 import ru.practicum.exploreWithMe.repository.RequestRepository;
 import ru.practicum.exploreWithMe.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,23 +31,25 @@ public class RequestServiceImpl implements RequestService {
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
 
+    private final RequestMapper requestMapper;
+
     @Override
     @Transactional
     public Request add(long userId, long eventId) {
 
         Request reqExist = requestRepository.findByRequesterIdAndEventId(userId, eventId);
         if (reqExist != null) {
-            return reqExist;
+            throw new ConflictException(HttpStatus.CONFLICT);
         }
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
         if (Objects.equals(event.getInitiator().getId(), userId)) {
-            throw new NotFoundException(HttpStatus.CONFLICT);
+            throw new ConflictException(HttpStatus.CONFLICT);
         }
         if (event.getState() != EventState.PUBLISHED) {
-            throw new NotFoundException(HttpStatus.NOT_FOUND);
+            throw new ConflictException(HttpStatus.CONFLICT);
         }
         Request request = new Request();
         request.setCreated(LocalDateTime.now().withNano(0));
@@ -51,7 +57,7 @@ public class RequestServiceImpl implements RequestService {
         request.setEvent(event);
         if (requestRepository.getCountConfirmed(eventId) >= event.getParticipantLimit()
                 && event.getParticipantLimit() > 0) {
-            throw new NotFoundException(HttpStatus.CONFLICT);
+            throw new ConflictException(HttpStatus.CONFLICT);
         }
         if (!event.getRequestModeration()) {
             request.setStatus(Status.CONFIRMED);
@@ -91,7 +97,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     @Transactional
-    public Request confirm(long userId, long eventId, long reqId) {
+    public RequestsUpdResult confirm(long userId, long eventId, RequestsUpd upd) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
         Event event = eventRepository.findById(eventId)
@@ -99,40 +105,44 @@ public class RequestServiceImpl implements RequestService {
         if (!event.getInitiator().getId().equals(userId)) {
             throw new NotFoundException(HttpStatus.NOT_FOUND);
         }
-        Request request = requestRepository.findById(reqId)
-                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
-        if (!request.getEvent().getId().equals(eventId)) {
-            throw new NotFoundException(HttpStatus.NOT_FOUND);
-        }
-        if (event.getParticipantLimit() == (requestRepository.getCountConfirmed(eventId) + 1)) {
-            List<Request> requests = requestRepository.findAllByEventIdAndStatus(eventId, Status.PENDING);
+        Integer countConfirmed = requestRepository.getCountConfirmed(eventId);
+        List<Request> requests = requestRepository.findAllByEventIdAndStatus(eventId, Status.PENDING);
+        if (event.getParticipantLimit() <= countConfirmed) {
             requests.forEach(r -> r.setStatus(Status.REJECTED));
-            request.setStatus(Status.CONFIRMED);
-        } else if (event.getParticipantLimit() < requestRepository.getCountConfirmed(eventId)) {
-            request.setStatus(Status.REJECTED);
-        } else {
-            request.setStatus(Status.CONFIRMED);
+            throw new ConflictException(HttpStatus.CONFLICT);
+        } else if ((event.getParticipantLimit() - countConfirmed) >= upd.getRequestIds().size()) {
+            requests.forEach(r -> r.setStatus(Status.CONFIRMED));
         }
-        log.info("---===>>> REQ_SERV query confirmed request = /{}/", request);
-        return request;
+        List<Request> rejected = new ArrayList<>();
+        List<Request> confirmed = requestRepository.findAllByIds(upd.getRequestIds());
+
+        confirmed.forEach(request -> request.setStatus(upd.getStatus()));
+        log.info("--==>> REQ_SRV confirm count req=/{}/", confirmed.size());
+        return requestMapper.toReqUpdRes(confirmed, rejected);
     }
 
     @Override
     @Transactional
-    public Request reject(long userId, long eventId, long reqId) {
+    public RequestsUpdResult reject(long userId, long eventId, RequestsUpd upd) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
         if (!event.getInitiator().getId().equals(userId)) {
-            throw new NotFoundException(HttpStatus.NOT_FOUND);
+            throw new ConflictException(HttpStatus.CONFLICT);
         }
-        Request request = requestRepository.findById(reqId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        if (!request.getEvent().getId().equals(eventId)) {
-            throw new NotFoundException(HttpStatus.NOT_FOUND);
+
+        List<Request> confirmed = new ArrayList<>();
+        List<Request> rejected = requestRepository.findAllByIds(upd.getRequestIds());
+
+        for(Request request : rejected){
+            if(request.getStatus().equals(Status.CONFIRMED)){
+                throw new ConflictException(HttpStatus.CONFLICT);
+            }
+            request.setStatus(upd.getStatus());
         }
-        request.setStatus(Status.REJECTED);
-        return request;
+
+        log.info("--==>> REQ_SRV reject count req=/{}/", rejected.size());
+        return requestMapper.toReqUpdRes(confirmed, rejected);
     }
 }

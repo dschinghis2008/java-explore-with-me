@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 @Data
 public class CategoryDto {
 
-    @NotNull(groups = {Update.class})
     private Long id;
 
     @NotBlank(groups = {Create.class, Update.class})

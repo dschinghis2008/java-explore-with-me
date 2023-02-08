@@ -2,6 +2,7 @@ package ru.practicum.exploreWithMe.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import ru.practicum.exploreWithMe.model.StateAction;
 
 import java.time.LocalDateTime;
 
@@ -19,4 +20,5 @@ public class EventAdmDto {
     private Integer participantLimit;
     private Boolean requestModeration;
     private Long category;
+    private StateAction stateAction;
 }
