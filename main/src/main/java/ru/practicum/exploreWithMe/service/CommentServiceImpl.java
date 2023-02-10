@@ -29,8 +29,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public Comment add(Comment comment) {
-        User user = userRepository.findById(comment.getAuthor().getId())
+    public Comment add(long userId, Comment comment) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
         Event event = eventRepository.findById(comment.getEvent().getId())
                 .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
@@ -57,9 +57,8 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public Comment update(long authorId, Comment comment) {
-        Comment commentUpd = commentRepository.findById(comment.getId())
-                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
-        if (!comment.getAuthor().getId().equals(authorId)) {
+        Comment commentUpd = commentRepository.findByIdAndAuthorId(comment.getId(), authorId);
+        if (commentUpd == null){
             throw new NotFoundException(HttpStatus.NOT_FOUND);
         }
         commentUpd.setText(comment.getText());

@@ -2,6 +2,8 @@ package ru.practicum.exploreWithMe.controller.adm;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.exploreWithMe.model.dto.CompilationDto;
 import ru.practicum.exploreWithMe.model.dto.CompilationInDto;
@@ -18,24 +20,20 @@ public class CompilationAdmController {
     private final CompilationMapper compilationMapper;
 
     @PostMapping("/admin/compilations")
-    public CompilationDto add(@RequestBody @Valid CompilationInDto compilationDto) {
+    public ResponseEntity<CompilationDto> add(@RequestBody @Valid CompilationInDto compilationDto) {
         log.info("====>>> COMP_REST add comp=/{}/", compilationDto);
-        return compilationService.add(compilationDto);
+        return new ResponseEntity<>(compilationService.add(compilationDto), HttpStatus.CREATED);
     }
 
-    @PatchMapping("/admin/compilations/{compId}/pin")
-    public CompilationDto pin(@PathVariable long compId) {
-        return compilationMapper.toDto(compilationService.pin(compId));
+    @PatchMapping("/admin/compilations/{compId}")
+    public CompilationDto update(@PathVariable long compId, @RequestBody CompilationInDto dto) {
+        return compilationMapper.toDto(compilationService.update(compId, dto));
     }
 
     @DeleteMapping("/admin/compilations/{compId}")
-    public void delete(@PathVariable long compId) {
+    public ResponseEntity<Integer> delete(@PathVariable long compId) {
         compilationService.deleteCompilation(compId);
-    }
-
-    @DeleteMapping("/admin/compilations/{compId}/pin")
-    public CompilationDto unpin(@PathVariable long compId) {
-        return compilationMapper.toDto(compilationService.unpin(compId));
+        return new ResponseEntity<>(204, HttpStatus.NO_CONTENT);
     }
 
     @PatchMapping("/admin/compilations/{compId}/events/{eventId}")

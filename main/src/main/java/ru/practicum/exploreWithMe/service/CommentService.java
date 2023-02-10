@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface CommentService {
 
-    Comment add(Comment comment);
+    Comment add(long userId, Comment comment);
 
     Comment update(long authorId, Comment comment);
 

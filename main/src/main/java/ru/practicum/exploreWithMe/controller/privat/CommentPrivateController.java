@@ -25,13 +25,13 @@ public class CommentPrivateController {
     private final CommentService commentService;
     private final CommentMapper commentMapper;
 
-    @PostMapping
-    public CommentOutDto add(@RequestBody @Validated(Create.class) CommentDto dto) {
+    @PostMapping("user/{userId}")
+    public CommentOutDto add(@PathVariable long userId, @RequestBody @Validated(Create.class) CommentDto dto) {
         log.info("--==>>COMMENT_REST dto=/{}/", dto);
         Comment comment = commentMapper.toComment(dto);
         log.info("--==>>COMMENT_REST comment(text,author,event)=/{},{},{}/",
-                comment.getText(), comment.getAuthor().getId(), comment.getEvent().getId());
-        return commentMapper.toOutDto(commentService.add(comment));
+                comment.getText(), userId, comment.getEvent().getId());
+        return commentMapper.toOutDto(commentService.add(userId, comment));
     }
 
     @PatchMapping("/user/{authorId}")

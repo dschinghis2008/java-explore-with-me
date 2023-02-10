@@ -35,4 +35,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     Page<Comment> findAllByEventOrderByCreated(Event event, Pageable pageable);
 
     Page<Comment> findAllByAuthorOrderByCreated(User user, Pageable pageable);
+
+    @Query("select c from Comment c where c.id=:id and c.author.id=:authorId")
+    Comment findByIdAndAuthorId(long id, long authorId);
 }

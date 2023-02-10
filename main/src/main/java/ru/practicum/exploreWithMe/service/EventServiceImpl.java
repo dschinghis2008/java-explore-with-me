@@ -298,18 +298,14 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public Event update(long userId, long eventId, Event event) {
+    public Event update(long userId, long eventId, Event event, StateAction stateAction) {
         if (event.getEventDate() != null
                 && !checkDiffTime(LocalDateTime.now(), event.getEventDate(), 2)) {
             log.info("check dt=/{}/", checkDiffTime(LocalDateTime.now(), event.getEventDate(), 2).toString());
             throw new ConflictException(HttpStatus.CONFLICT);
         }
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
-        /*Category category = new Category();
-        if (event.getCategory().getId() != null) {
-            category = categoryRepository.findById(event.getCategory().getId())
-                    .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
-        }*/
+
         Event eventUpd = eventRepository.findByIdAndInitiator(eventId, user);
         if (eventUpd == null) {
             throw new NotFoundException(HttpStatus.NOT_FOUND);
@@ -329,9 +325,7 @@ public class EventServiceImpl implements EventService {
         if (event.getCreatedOn() != null) {
             eventUpd.setCreatedOn(event.getCreatedOn());
         }
-        if (event.getEventDate() != null) {
-            eventUpd.setEventDate(event.getEventDate());
-        }
+
         if (event.getEventDate() != null) {
             eventUpd.setEventDate(event.getEventDate());
         }
@@ -351,16 +345,13 @@ public class EventServiceImpl implements EventService {
             eventUpd.setPublishedOn(event.getPublishedOn());
         }
         eventUpd.setRequestModeration(event.getRequestModeration());
-        if (event.getState() != null) {
+        if (stateAction.equals(StateAction.SEND_TO_REVIEW)) {
+            eventUpd.setState(EventState.PENDING);
+        } else if (event.getState() != null) {
             eventUpd.setState(event.getState());
         }
-        /*if (event.getCategory() != null) {
-            eventUpd.setCategory(category);
-        }
-        if (event.getInitiator() != null) {
-            eventUpd.setInitiator(user);
-        }*/
-        log.info("---===>>> EVENTSERV update: userId=/{}/, event=/{}/", userId, event.getId());
+
+        log.info("---===>>> EVENTSERV update: userId=/{}/, event=/{}/", userId, eventUpd.getId());
         return eventUpd;
     }
 
@@ -431,7 +422,7 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public Event cancelEvent(long userId, long eventId) {
         Event event = eventRepository.findByIdAndInitiatorId(eventId, userId);
-        event.setState(EventState.PENDING);
+        event.setState(EventState.CANCELED);
         log.info("---===>>> EVENTSERV cancel current user's event: userId=/{}/, eventId=/{}/", userId, event.getId());
         return event;
     }

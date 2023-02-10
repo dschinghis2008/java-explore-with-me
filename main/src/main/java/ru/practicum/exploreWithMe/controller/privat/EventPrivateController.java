@@ -43,16 +43,20 @@ public class EventPrivateController {
 
     @PatchMapping("/users/{userId}/events/{eventId}")
     public EventDto update(@PathVariable long userId, @PathVariable long eventId,
-                               @RequestBody @Valid EventUpdDto eventDto) {
+                           @RequestBody @Valid EventUpdDto eventDto) {
         log.info("---===>>>EVENT CTRL UPDATE eventDto=/{}/", eventDto);
-        if (eventDto.getStateAction() != null && eventDto.getStateAction().equals(StateAction.SEND_TO_REVIEW)) {
+        if (eventDto.getStateAction() != null && eventDto.getStateAction().equals(StateAction.CANCEL_REVIEW)) {
             EventDto dto = eventMapper.toDto(eventService.cancelEvent(userId, eventId));
             log.info("---===>>>EVENT CTRL UPDATE categ=/{}/", dto.getCategory());
             return dto;
+        } else if (eventDto.getStateAction() != null && eventDto.getStateAction().equals(StateAction.SEND_TO_REVIEW)) {
+            Event event = eventMapper.toEventFromUpdDto(eventDto);
+            log.info("---===>>>EVENT CTRL UPDATE eventStateAction=/{}/", eventDto.getStateAction());
+            return eventMapper.toDto(eventService.update(userId, eventId, event, eventDto.getStateAction()));
         } else {
             Event event = eventMapper.toEventFromUpdDto(eventDto);
-            log.info("---===>>>EVENT CTRL UPDATE event=/{}/", event.getEventDate());
-            return eventMapper.toDto(eventService.update(userId, eventId, event));
+            log.info("---===>>>EVENT CTRL UPDATE eventStateAction=/{}/", eventDto);
+            return  eventMapper.toDto(eventService.update(userId, eventId, event, null));
         }
     }
 

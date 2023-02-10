@@ -18,8 +18,5 @@ public class CommentDto {
     private String text;
 
     @NotNull(groups = {Create.class})
-    private Long author;
-
-    @NotNull(groups = {Create.class})
     private Long event;
 }

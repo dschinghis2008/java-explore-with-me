@@ -14,7 +14,6 @@ public class CommentMapper {
         CommentDto commentDto = new CommentDto();
         commentDto.setId(comment.getId());
         commentDto.setText(comment.getText());
-        commentDto.setAuthor(comment.getAuthor().getId());
         commentDto.setEvent(comment.getEvent().getId());
         return commentDto;
     }
@@ -35,7 +34,6 @@ public class CommentMapper {
         Event event = new Event();
         User user = new User();
         event.setId(commentDto.getEvent());
-        user.setId(commentDto.getAuthor());
         comment.setId(commentDto.getId());
         comment.setText(commentDto.getText());
         comment.setAuthor(user);
