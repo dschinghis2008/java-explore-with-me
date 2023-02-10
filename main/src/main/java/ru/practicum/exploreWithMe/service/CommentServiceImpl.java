@@ -58,7 +58,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public Comment update(long authorId, Comment comment) {
         Comment commentUpd = commentRepository.findByIdAndAuthorId(comment.getId(), authorId);
-        if (commentUpd == null){
+        if (commentUpd == null) {
             throw new NotFoundException(HttpStatus.NOT_FOUND);
         }
         commentUpd.setText(comment.getText());

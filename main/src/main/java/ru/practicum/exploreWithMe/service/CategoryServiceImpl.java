@@ -61,7 +61,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public void remove(long id) {
         if (categoryRepository.findById(id).isPresent()) {
-            if (eventRepository.getCountByCategory(id) > 0){
+            if (eventRepository.getCountByCategory(id) > 0) {
                 throw new ConflictException(HttpStatus.CONFLICT);
             }
             log.info("deleted category id=/{}/", id);

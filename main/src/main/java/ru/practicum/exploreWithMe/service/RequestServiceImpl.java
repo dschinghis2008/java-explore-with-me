@@ -135,8 +135,8 @@ public class RequestServiceImpl implements RequestService {
         List<Request> confirmed = new ArrayList<>();
         List<Request> rejected = requestRepository.findAllByIds(upd.getRequestIds());
 
-        for(Request request : rejected){
-            if(request.getStatus().equals(Status.CONFIRMED)){
+        for (Request request : rejected) {
+            if (request.getStatus().equals(Status.CONFIRMED)) {
                 throw new ConflictException(HttpStatus.CONFLICT);
             }
             request.setStatus(upd.getStatus());
