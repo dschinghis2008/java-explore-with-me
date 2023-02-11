@@ -30,7 +30,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
                     "        union\n" +
                     "        select 0 u1, 0 u2, 0 u3, count(id) u4 from events e " +
                     "        where e.id=:eventId and e.state='PUBLISHED') a1) a2")
-    byte foundRoleOfCommentator(Long userId, Long eventId);
+    int foundRoleOfCommentator(Long userId, Long eventId);
 
     Page<Comment> findAllByEventOrderByCreated(Event event, Pageable pageable);
 

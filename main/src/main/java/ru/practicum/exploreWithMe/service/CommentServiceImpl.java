@@ -8,10 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.exploreWithMe.exception.NotFoundException;
-import ru.practicum.exploreWithMe.model.Comment;
-import ru.practicum.exploreWithMe.model.Event;
-import ru.practicum.exploreWithMe.model.EventState;
-import ru.practicum.exploreWithMe.model.User;
+import ru.practicum.exploreWithMe.model.*;
 import ru.practicum.exploreWithMe.repository.CommentRepository;
 import ru.practicum.exploreWithMe.repository.EventRepository;
 import ru.practicum.exploreWithMe.repository.UserRepository;
@@ -27,6 +24,9 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
+    private static final int USERS_COMMENT = 3;
+    private static final int PARTICIPANTS_COMMENT = 13;
+    private static final int INITIATORS_COMMENT = 103;
 
     @Override
     @Transactional
@@ -45,11 +45,11 @@ public class CommentServiceImpl implements CommentService {
             case 2:
                 log.info("--==>>COMMENT_SRV ADD: Not found event or/and user");
                 throw new NotFoundException(HttpStatus.NOT_FOUND);
-            case 3:
+            case USERS_COMMENT:
                 comment.setVisible(false);
                 break;
-            case 13:
-            case 103:
+            case PARTICIPANTS_COMMENT:
+            case INITIATORS_COMMENT:
                 comment.setVisible(true);
         }
         comment.setCreated(LocalDateTime.now());
