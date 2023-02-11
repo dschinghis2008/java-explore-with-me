@@ -17,9 +17,11 @@ public interface CommentService {
     List<Comment> getAllByAuthorId(long userId, int from, int size);
 
     Comment updVisibleUser(long userId, boolean visible, Comment comment);
+
     Comment updVisibleAdm(boolean visible, Comment comment);
 
     void removeByAuthor(long commentId, long authorId);
+
     void removeByAdmin(long commentId);
 
 }
