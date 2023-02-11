@@ -21,5 +21,6 @@ public interface CommentService {
     Comment updVisibleAdm(boolean visible, Comment comment);
 
     void removeByAuthor(long commentId, long authorId);
+
     void removeByAdmin(long commentId);
 }
