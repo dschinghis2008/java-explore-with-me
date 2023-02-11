@@ -31,9 +31,9 @@ public class CategoryAdmController {
     }
 
     @DeleteMapping("/admin/categories/{catId}")
-    public ResponseEntity<Integer> remove(@PathVariable long catId) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remove(@PathVariable long catId) {
         categoryService.remove(catId);
-        return new ResponseEntity<>(204, HttpStatus.NO_CONTENT);
     }
 
 }

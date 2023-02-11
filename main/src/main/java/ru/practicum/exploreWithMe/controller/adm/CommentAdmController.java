@@ -16,12 +16,11 @@ public class CommentAdmController {
 
     @PatchMapping("/visible")
     public CommentOutDto updVisible(@RequestParam boolean visible, @RequestBody CommentDto dto) {
-        return commentMapper.toOutDto(commentService.updVisible(0, visible, true,
-                commentMapper.toComment(dto)));
+        return commentMapper.toOutDto(commentService.updVisibleAdm(visible, commentMapper.toComment(dto)));
     }
 
     @DeleteMapping("/{commentId}")
     public void remove(@PathVariable long commentId) {
-        commentService.remove(commentId, 0, true);
+        commentService.removeByAdmin(commentId);
     }
 }

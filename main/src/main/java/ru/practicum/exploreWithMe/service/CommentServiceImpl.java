@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.exploreWithMe.exception.NotFoundException;
 import ru.practicum.exploreWithMe.model.Comment;
 import ru.practicum.exploreWithMe.model.Event;
+import ru.practicum.exploreWithMe.model.EventState;
 import ru.practicum.exploreWithMe.model.User;
 import ru.practicum.exploreWithMe.repository.CommentRepository;
 import ru.practicum.exploreWithMe.repository.EventRepository;
@@ -32,8 +33,10 @@ public class CommentServiceImpl implements CommentService {
     public Comment add(long userId, Comment comment) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
-        Event event = eventRepository.findById(comment.getEvent().getId())
-                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
+        Event event = eventRepository.findByIdAndState(comment.getEvent().getId(), EventState.PUBLISHED);
+        if (event == null) {
+            throw new NotFoundException(HttpStatus.NOT_FOUND);
+        }
         comment.setAuthor(user);
         comment.setEvent(event);
         switch (commentRepository.foundRoleOfCommentator(user.getId(), event.getId())) {
@@ -66,22 +69,32 @@ public class CommentServiceImpl implements CommentService {
         return commentUpd;
     }
 
-    @Override
-    @Transactional
-    public Comment updVisible(long userId, boolean visible, boolean isAdm, Comment comment) {
-        Comment commentUpd = commentRepository.findById(comment.getId())
+    private Comment updVisible(long userId, boolean visible, long commentId, boolean isAdm) {
+        Comment commentUpd = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
         if (!isAdm) {
             if (commentRepository
                     .foundRoleOfCommentator(userId, commentUpd.getEvent().getId()) != 103) {
-                log.info("--==>>COMMENT_SRV пользователь не является инициатором события и запрос " +
-                        "не от администратора, признак видимости коммента не может быть изменен");
+                log.info("--==>>COMMENT_SRV пользователь не является инициатором события ," +
+                        " признак видимости коммента не может быть изменен");
                 throw new NotFoundException(HttpStatus.NOT_FOUND);
             }
         }
         commentUpd.setVisible(visible);
         log.info("--==>>COMMENT_SERV comment id=/{}/ set visible=/{}/", commentUpd.getId(), visible);
         return commentUpd;
+    }
+
+    @Override
+    @Transactional
+    public Comment updVisibleUser(long userId, boolean visible, Comment comment) {
+        return updVisible(userId, visible, comment.getId(), false);
+    }
+
+    @Override
+    @Transactional
+    public Comment updVisibleAdm(boolean visible, Comment comment) {
+        return updVisible(0, visible, comment.getId(), true);
     }
 
     @Override
@@ -108,16 +121,20 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public void remove(long commentId, long authorId, boolean isAdm) {
+    public void removeByAuthor(long commentId, long authorId) {
+        Comment comment = commentRepository.findByIdAndAuthorId(commentId, authorId);
+        if (comment == null) {
+            throw new NotFoundException(HttpStatus.NOT_FOUND);
+        }
+        commentRepository.deleteById(commentId);
+        log.info("--==>>COMMENT_SRV delete comment /{}/", commentId);
+    }
+
+    @Override
+    @Transactional
+    public void removeByAdmin(long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
-        if (!isAdm) {
-            if (!comment.getAuthor().getId().equals(authorId)) {
-                log.info("--==>>COMMENT_SRV пользователь не является автором коммента и запрос " +
-                        "не от администратора, коммент не может быть удален");
-                throw new NotFoundException(HttpStatus.NOT_FOUND);
-            }
-        }
         commentRepository.deleteById(commentId);
         log.info("--==>>COMMENT_SRV delete comment /{}/", commentId);
     }

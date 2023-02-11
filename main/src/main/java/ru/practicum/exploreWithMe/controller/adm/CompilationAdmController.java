@@ -31,9 +31,9 @@ public class CompilationAdmController {
     }
 
     @DeleteMapping("/admin/compilations/{compId}")
-    public ResponseEntity<Integer> delete(@PathVariable long compId) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable long compId) {
         compilationService.deleteCompilation(compId);
-        return new ResponseEntity<>(204, HttpStatus.NO_CONTENT);
     }
 
     @PatchMapping("/admin/compilations/{compId}/events/{eventId}")

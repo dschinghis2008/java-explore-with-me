@@ -43,8 +43,7 @@ public class CommentPrivateController {
     @PatchMapping("/user/{userId}/visible")
     public CommentOutDto updVisible(@PathVariable long userId, @RequestParam boolean visible,
                                     @RequestBody CommentDto dto) {
-        return commentMapper.toOutDto(commentService.updVisible(userId, visible, false,
-                commentMapper.toComment(dto)));
+        return commentMapper.toOutDto(commentService.updVisibleUser(userId, visible, commentMapper.toComment(dto)));
     }
 
     @GetMapping("/user/{authorId}")
@@ -58,6 +57,6 @@ public class CommentPrivateController {
 
     @DeleteMapping("/{commentId}/user/{authorId}")
     public void remove(@PathVariable long commentId, @PathVariable long authorId) {
-        commentService.remove(commentId, authorId, false);
+        commentService.removeByAuthor(commentId, authorId);
     }
 }

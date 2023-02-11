@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import ru.practicum.exploreWithMe.model.Event;
+import ru.practicum.exploreWithMe.model.EventState;
 import ru.practicum.exploreWithMe.model.User;
 
 import java.util.Set;
@@ -20,6 +21,8 @@ public interface EventRepository extends JpaRepository<Event, Long>, QuerydslPre
 
     @Query("select e from Event e where e.id in :ids")
     Set<Event> getEventsById(Set<Long> ids);
+
+    Event findByIdAndState(Long id, EventState state);
 
     @Query(nativeQuery = true, value = "select count(id) from events where category_id=:catId")
     int getCountByCategory(long catId);
