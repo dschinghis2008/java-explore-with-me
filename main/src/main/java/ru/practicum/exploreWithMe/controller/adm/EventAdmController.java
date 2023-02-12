@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.exploreWithMe.model.StateAction;
 import ru.practicum.exploreWithMe.model.dto.*;
 import ru.practicum.exploreWithMe.model.mapper.EventMapper;
 import ru.practicum.exploreWithMe.service.EventService;
@@ -22,14 +23,20 @@ public class EventAdmController {
     private final EventService eventService;
     private final EventMapper eventMapper;
 
-    @PatchMapping("/admin/events/{eventId}/publish")
-    public EventDto publish(@PathVariable long eventId) {
-        return eventMapper.toDto(eventService.publish(eventId));
-    }
-
-    @PatchMapping("/admin/events/{eventId}/reject")
-    public EventDto reject(@PathVariable long eventId) {
-        return eventMapper.toDto(eventService.reject(eventId));
+    @PatchMapping("/admin/events/{eventId}")
+    public EventDto update(@PathVariable long eventId, @RequestBody EventAdmDto eventAdmDto) {
+        log.info("--==>>EVENT_CTRL_changeStatus stateAction=/{}/", eventAdmDto);
+        if (eventAdmDto.getStateAction() != null) {
+            if (eventAdmDto.getStateAction().equals(StateAction.PUBLISH_EVENT)) {
+                return eventMapper.toDto(eventService.publish(eventId, eventMapper.toEventFromAdmDto(eventAdmDto)));
+            }
+            if (eventAdmDto.getStateAction().equals(StateAction.REJECT_EVENT)) {
+                return eventMapper.toDto(eventService.reject(eventId, eventMapper.toEventFromAdmDto(eventAdmDto)));
+            }
+        } else {
+            return eventMapper.toDto(eventService.updateAdm(eventId, eventMapper.toEventFromAdmDto(eventAdmDto)));
+        }
+        return null;
     }
 
     @GetMapping("/admin/events")

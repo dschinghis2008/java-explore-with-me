@@ -11,7 +11,7 @@ public class CompilationInDto {
     @NotBlank
     private String title;
 
-    private boolean pinned;
+    private Boolean pinned;
     private Set<Long> events;
 
 }

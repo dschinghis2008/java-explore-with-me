@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import ru.practicum.exploreWithMe.exception.InvalidDataException;
+import ru.practicum.exploreWithMe.exception.ConflictException;
 import ru.practicum.exploreWithMe.exception.NotFoundException;
 import ru.practicum.exploreWithMe.model.*;
 import ru.practicum.exploreWithMe.model.QEvent;
@@ -49,7 +49,7 @@ public class EventServiceImpl implements EventService {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    private Boolean checkDiffTime(LocalDateTime dt1, LocalDateTime dt2, Integer diff) {
+    private Boolean checkDiffTime(LocalDateTime dt1, LocalDateTime dt2, int diff) {
         return (dt2.minusHours(diff).isAfter(dt1) || dt2.minusHours(diff).isEqual(dt1));
     }
 
@@ -57,7 +57,7 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public Event add(long userId, Event event) {
         if (!checkDiffTime(LocalDateTime.now(), event.getEventDate(), 2)) {
-            throw new InvalidDataException(HttpStatus.BAD_REQUEST);
+            throw new ConflictException(HttpStatus.CONFLICT);
         }
         event.setInitiator(userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND)));
@@ -72,14 +72,35 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public Event publish(long eventId) {
-        Event event = eventRepository.findById(eventId)
+    public Event publish(long id, Event eventIn) {
+        Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
+        if (event.getState().equals(EventState.PUBLISHED) || event.getState().equals(EventState.CANCELED)) {
+            throw new ConflictException(HttpStatus.CONFLICT);
+        }
         if (event.getState().equals(EventState.PENDING) &&
                 checkDiffTime(LocalDateTime.now().withNano(0), event.getEventDate(), 1)) {
+            if (eventIn.getAnnotation() != null && !eventIn.getAnnotation().isBlank()) {
+                event.setAnnotation(eventIn.getAnnotation());
+            }
+            if (eventIn.getTitle() != null && !eventIn.getTitle().isBlank()) {
+                event.setTitle(eventIn.getTitle());
+            }
+            if (eventIn.getDescription() != null && !eventIn.getDescription().isBlank()) {
+                event.setDescription(eventIn.getDescription());
+            }
+            if (eventIn.getParticipantLimit() != null) {
+                event.setParticipantLimit(eventIn.getParticipantLimit());
+            }
+            if (eventIn.getEventDate() != null) {
+                event.setEventDate(eventIn.getEventDate());
+            }
+            if (eventIn.getPaid() != null) {
+                event.setPaid(eventIn.getPaid());
+            }
             event.setState(EventState.PUBLISHED);
             event.setPublishedOn(LocalDateTime.now().withNano(0));
-            log.info("-----=====>>> published event id=/{}/", eventId);
+            log.info("-----=====>>> published event id=/{}/", event.getId());
             return event;
         } else {
             throw new NotFoundException(HttpStatus.NOT_FOUND);
@@ -88,13 +109,15 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public Event reject(long eventId) {
-        Event event = eventRepository.findById(eventId)
+    public Event reject(long id, Event eventIn) {
+        Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         if (event.getState().equals(EventState.PENDING)) {
             event.setState(EventState.CANCELED);
-            log.info("-----=====>>> rejected event id=/{}/", eventId);
+            log.info("-----=====>>> rejected event id=/{}/", eventIn.getId());
             return event;
+        } else if (event.getState().equals(EventState.PUBLISHED)) {
+            throw new ConflictException(HttpStatus.CONFLICT);
         } else {
             throw new NotFoundException(HttpStatus.NOT_FOUND);
         }
@@ -249,7 +272,7 @@ public class EventServiceImpl implements EventService {
 
         Pageable pageable = PageRequest.of(from, size);
         List<Event> events = eventRepository.findAllByInitiatorId(id, pageable).getContent();
-                List<EventDto> dtos = events.stream()
+        List<EventDto> dtos = events.stream()
                 .map(eventMapper::toDto)
                 .collect(Collectors.toList());
 
@@ -275,17 +298,20 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public Event update(long userId, Event event) {
-
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
-        Category category = new Category();
-        if (event.getCategory().getId() != null) {
-            category = categoryRepository.findById(event.getCategory().getId())
-                    .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
+    public Event update(long userId, long eventId, Event event, StateAction stateAction) {
+        if (event.getEventDate() != null
+                && !checkDiffTime(LocalDateTime.now(), event.getEventDate(), 2)) {
+            log.info("check dt=/{}/", checkDiffTime(LocalDateTime.now(), event.getEventDate(), 2).toString());
+            throw new ConflictException(HttpStatus.CONFLICT);
         }
-        Event eventUpd = eventRepository.findByIdAndInitiator(event.getId(), user);
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND));
+
+        Event eventUpd = eventRepository.findByIdAndInitiator(eventId, user);
         if (eventUpd == null) {
             throw new NotFoundException(HttpStatus.NOT_FOUND);
+        }
+        if (eventUpd.getState().equals(EventState.PUBLISHED)) {
+            throw new ConflictException(HttpStatus.CONFLICT);
         }
         if (event.getAnnotation() != null && !event.getAnnotation().isBlank()) {
             eventUpd.setAnnotation(event.getAnnotation());
@@ -299,9 +325,7 @@ public class EventServiceImpl implements EventService {
         if (event.getCreatedOn() != null) {
             eventUpd.setCreatedOn(event.getCreatedOn());
         }
-        if (event.getEventDate() != null) {
-            eventUpd.setEventDate(event.getEventDate());
-        }
+
         if (event.getEventDate() != null) {
             eventUpd.setEventDate(event.getEventDate());
         }
@@ -321,23 +345,20 @@ public class EventServiceImpl implements EventService {
             eventUpd.setPublishedOn(event.getPublishedOn());
         }
         eventUpd.setRequestModeration(event.getRequestModeration());
-        if (event.getState() != null) {
+        if (stateAction.equals(StateAction.SEND_TO_REVIEW)) {
+            eventUpd.setState(EventState.PENDING);
+        } else if (event.getState() != null) {
             eventUpd.setState(event.getState());
         }
-        if (event.getCategory() != null) {
-            eventUpd.setCategory(category);
-        }
-        if (event.getInitiator() != null) {
-            eventUpd.setInitiator(user);
-        }
-        log.info("---===>>> EVENTSERV update: userId=/{}/, event=/{}/", userId, event);
+
+        log.info("---===>>> EVENTSERV update: userId=/{}/, event=/{}/", userId, eventUpd.getId());
         return eventUpd;
     }
 
     @Override
     @Transactional
     public Event updateAdm(long id, Event event) {
-        log.info("---===>>> EVENTSERV updateAdm: event=/{}/", event);
+
         Category category = new Category();
         if (event.getCategory().getId() != null) {
             category = categoryRepository.findById(event.getCategory().getId())
@@ -350,14 +371,17 @@ public class EventServiceImpl implements EventService {
         if (event.getAnnotation() != null && !event.getAnnotation().isBlank()) {
             eventUpd.setAnnotation(event.getAnnotation());
         }
-        if (event.getTitle() != null && !event.getAnnotation().isBlank()) {
+        if (event.getTitle() != null && !event.getTitle().isBlank()) {
             eventUpd.setTitle(event.getTitle());
         }
-        if (event.getDescription() != null && !event.getAnnotation().isBlank()) {
+        if (event.getDescription() != null && !event.getDescription().isBlank()) {
             eventUpd.setDescription(event.getDescription());
         }
 
         if (event.getEventDate() != null) {
+            if (event.getEventDate().isBefore(LocalDateTime.now())) {
+                throw new ConflictException(HttpStatus.CONFLICT);
+            }
             eventUpd.setEventDate(event.getEventDate());
         }
         if (event.getLatitude() != null) {
@@ -381,6 +405,7 @@ public class EventServiceImpl implements EventService {
             eventUpd.setCategory(category);
         }
 
+        log.info("---===>>> EVENTSERV updateAdm: eventState=/{}/", event.getState());
         return eventUpd;
     }
 
@@ -398,7 +423,7 @@ public class EventServiceImpl implements EventService {
     public Event cancelEvent(long userId, long eventId) {
         Event event = eventRepository.findByIdAndInitiatorId(eventId, userId);
         event.setState(EventState.CANCELED);
-        log.info("---===>>> EVENTSERV cancel current user's event: userId=/{}/, event=/{}/", userId, event);
+        log.info("---===>>> EVENTSERV cancel current user's event: userId=/{}/, eventId=/{}/", userId, event.getId());
         return event;
     }
 

@@ -21,4 +21,6 @@ public interface EventRepository extends JpaRepository<Event, Long>, QuerydslPre
     @Query("select e from Event e where e.id in :ids")
     Set<Event> getEventsById(Set<Long> ids);
 
+    @Query(nativeQuery = true, value = "select count(id) from events where category_id=:catId")
+    int getCountByCategory(long catId);
 }

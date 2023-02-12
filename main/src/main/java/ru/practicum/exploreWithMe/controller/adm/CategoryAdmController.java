@@ -1,6 +1,8 @@
 package ru.practicum.exploreWithMe.controller.adm;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.exploreWithMe.model.dto.CategoryDto;
@@ -17,18 +19,21 @@ public class CategoryAdmController {
     private final CategoryMapper categoryMapper;
 
     @PostMapping("/admin/categories")
-    public CategoryDto add(@RequestBody @Validated(Create.class) CategoryDto categoryDto) {
-        return categoryMapper.toDto(categoryService.add(categoryMapper.toCategory(categoryDto)));
+    public ResponseEntity<CategoryDto> add(@RequestBody @Validated(Create.class) CategoryDto categoryDto) {
+        return new ResponseEntity<>(
+                categoryMapper.toDto(categoryService.add(categoryMapper.toCategory(null, categoryDto))),
+                HttpStatus.CREATED);
     }
 
-    @PatchMapping("/admin/categories")
-    public CategoryDto update(@RequestBody @Validated(Update.class) CategoryDto categoryDto) {
-        return categoryMapper.toDto(categoryService.update(categoryMapper.toCategory(categoryDto)));
+    @PatchMapping("/admin/categories/{catId}")
+    public CategoryDto update(@PathVariable long catId, @RequestBody @Validated(Update.class) CategoryDto categoryDto) {
+        return categoryMapper.toDto(categoryService.update(categoryMapper.toCategory(catId, categoryDto)));
     }
 
     @DeleteMapping("/admin/categories/{catId}")
-    public void remove(@PathVariable long catId) {
+    public ResponseEntity<Integer> remove(@PathVariable long catId) {
         categoryService.remove(catId);
+        return new ResponseEntity<>(204, HttpStatus.NO_CONTENT);
     }
 
 }

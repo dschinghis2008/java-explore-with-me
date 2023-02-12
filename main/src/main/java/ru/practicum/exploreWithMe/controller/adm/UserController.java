@@ -1,6 +1,8 @@
 package ru.practicum.exploreWithMe.controller.adm;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.exploreWithMe.model.dto.UserDto;
@@ -22,8 +24,8 @@ public class UserController {
     private final UserMapper userMapper;
 
     @PostMapping
-    public UserDto add(@RequestBody @Valid UserDto userDto) {
-        return userMapper.toDto(userService.add(userMapper.toUser(userDto)));
+    public ResponseEntity<UserDto> add(@RequestBody @Valid UserDto userDto) {
+        return new ResponseEntity<>(userMapper.toDto(userService.add(userMapper.toUser(userDto))), HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -36,7 +38,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable long userId) {
+    public ResponseEntity<Integer> deleteUser(@PathVariable long userId) {
         userService.delete(userId);
+        return new ResponseEntity<>(204, HttpStatus.NO_CONTENT);
     }
 }

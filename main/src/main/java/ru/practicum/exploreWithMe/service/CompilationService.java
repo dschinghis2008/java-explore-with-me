@@ -13,9 +13,7 @@ public interface CompilationService {
 
     List<Compilation> getAll(Boolean pinned, Integer from, Integer size);
 
-    Compilation pin(long id);
-
-    Compilation unpin(long id);
+    Compilation update(long id, CompilationInDto dto);
 
     void addEventToCompilation(long idEvent, long idComp);
 

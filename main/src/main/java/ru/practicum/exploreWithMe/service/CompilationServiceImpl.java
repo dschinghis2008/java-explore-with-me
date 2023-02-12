@@ -17,9 +17,7 @@ import ru.practicum.exploreWithMe.model.mapper.CompilationMapper;
 import ru.practicum.exploreWithMe.repository.CompilationRepository;
 import ru.practicum.exploreWithMe.repository.EventRepository;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -55,21 +53,18 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     @Transactional
-    public Compilation pin(long id) {
+    public Compilation update(long id, CompilationInDto dto) {
         Compilation compilation =
                 compilationRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        compilation.setPinned(true);
-        log.info("---===>>> pin compilation id=/{}/", id);
-        return compilation;
-    }
-
-    @Override
-    @Transactional
-    public Compilation unpin(long id) {
-        Compilation compilation =
-                compilationRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        compilation.setPinned(false);
-        log.info("---===>>> unpin compilation id=/{}/", id);
+        if (dto.getPinned() != null) {
+            compilation.setPinned(dto.getPinned());
+        }
+        if (dto.getEvents() != null) {
+            List<Event> events = eventRepository.findAllById(dto.getEvents());
+            Set<Event> e = new HashSet<>(events);
+            compilation.setEvents(e);
+        }
+        log.info("---===>>> COMP SRV compilation id=/{}/", id);
         return compilation;
     }
 

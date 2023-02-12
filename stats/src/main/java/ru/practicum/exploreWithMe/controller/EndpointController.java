@@ -2,6 +2,8 @@ package ru.practicum.exploreWithMe.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.exploreWithMe.model.EndpointHitDto;
 import ru.practicum.exploreWithMe.model.Mapper;
@@ -18,9 +20,10 @@ public class EndpointController {
     private final Mapper mapper;
 
     @PostMapping("/hit")
-    public EndpointHitDto add(@RequestBody EndpointHitDto endpointHitDto) {
+    public ResponseEntity<EndpointHitDto> add(@RequestBody EndpointHitDto endpointHitDto) {
         log.info("-==>>ENDPNTCTRL dto=/{}/", endpointHitDto);
-        return mapper.toDto(endpointService.add(mapper.toEndpoitHit(endpointHitDto)));
+        return new ResponseEntity<>(
+                mapper.toDto(endpointService.add(mapper.toEndpoitHit(endpointHitDto))), HttpStatus.CREATED);
     }
 
     @GetMapping("/stats")

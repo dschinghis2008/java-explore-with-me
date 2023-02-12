@@ -10,6 +10,9 @@ import java.util.List;
 
 public interface RequestRepository extends JpaRepository<Request, Long> {
 
+    @Query("select r from Request r where r.id in :ids and r.status=:status")
+    List<Request> findAllByIdsAndStatus(List<Long> ids, Status status);
+
     @Query("select r from Request r where r.requester.id = :requesterId and r.id = :id")
     Request findByRequesterIdAndId(Long requesterId, Long id);
 
@@ -19,8 +22,8 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     @Query("select r from Request r where r.requester.id = :requester")
     List<Request> findAllByRequesterOrderByCreated(Long requester, Pageable pageable);
 
-    @Query("select r from Request r where r.event.id = :eventId")
-    List<Request> findAllOfAuthor(Long eventId);
+    @Query("select r from Request r where r.id in :ids")
+    List<Request> findAllByIds(List<Long> ids);
 
     List<Request> findAllByEventId(Long eventId, Pageable pageable);
 

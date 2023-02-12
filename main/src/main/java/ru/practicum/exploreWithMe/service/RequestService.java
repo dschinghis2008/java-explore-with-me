@@ -1,6 +1,8 @@
 package ru.practicum.exploreWithMe.service;
 
 import ru.practicum.exploreWithMe.model.Request;
+import ru.practicum.exploreWithMe.model.dto.RequestsUpd;
+import ru.practicum.exploreWithMe.model.dto.RequestsUpdResult;
 
 import java.util.List;
 
@@ -14,7 +16,7 @@ public interface RequestService {
 
     List<Request> getAllOfAuthor(long userId, long eventId, Integer from, Integer size);
 
-    Request confirm(long userId, long eventId, long reqId);
+    RequestsUpdResult confirm(long userId, long eventId, RequestsUpd upd);
 
-    Request reject(long userId, long eventId, long reqId);
+    RequestsUpdResult reject(long userId, long eventId, RequestsUpd upd);
 }

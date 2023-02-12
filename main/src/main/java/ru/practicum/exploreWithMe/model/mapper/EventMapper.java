@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 public class EventMapper {
 
     private final UserMapper userMapper;
-    private final CategoryMapper categoryMapper;
 
     public EventDto toDto(Event event) {
         EventDto eventDto = new EventDto();
@@ -39,6 +38,31 @@ public class EventMapper {
         eventDto.setCategory(event.getCategory().getId());
         eventDto.setInitiator(userMapper.toDto(event.getInitiator()));
         return eventDto;
+    }
+
+    public Event toEvent(EventDto dto) {
+        Event event = new Event();
+
+        Category category = new Category();
+        category.setId(dto.getCategory());
+        event.setAnnotation(dto.getAnnotation());
+        event.setTitle(dto.getTitle());
+        event.setDescription(dto.getDescription());
+        event.setEventDate(dto.getEventDate());
+        event.setPaid(dto.getPaid());
+        event.setParticipantLimit(dto.getParticipantLimit());
+        if (dto.getRequestModeration() == null) {
+            dto.setRequestModeration(false);
+        }
+
+        if (dto.getLocation() != null) {
+            event.setLatitude(dto.getLocation().getLat());
+            event.setLongitude(dto.getLocation().getLon());
+        }
+
+        event.setRequestModeration(dto.getRequestModeration());
+        event.setCategory(category);
+        return event;
     }
 
     public EventShortDto toShortDto(Event event) {
@@ -182,8 +206,12 @@ public class EventMapper {
         eventDto.setPublishedOn(event.getPublishedOn());
         eventDto.setRequestModeration(event.getRequestModeration());
         eventDto.setState(event.getState());
-        eventDto.setCategory(categoryMapper.toDto(event.getCategory()));
-        eventDto.setInitiator(userMapper.toDto(event.getInitiator()));
+
+        CategoryDto categoryDto = new CategoryDto();
+        categoryDto.setId(event.getCategory().getId());
+        categoryDto.setName(event.getCategory().getName());
+
+        eventDto.setCategory(categoryDto);
         return eventDto;
     }
 

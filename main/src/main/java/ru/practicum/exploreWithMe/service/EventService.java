@@ -1,6 +1,7 @@
 package ru.practicum.exploreWithMe.service;
 
 import ru.practicum.exploreWithMe.model.Event;
+import ru.practicum.exploreWithMe.model.StateAction;
 import ru.practicum.exploreWithMe.model.dto.EventDto;
 import ru.practicum.exploreWithMe.model.dto.EventShortDto;
 import ru.practicum.exploreWithMe.model.dto.EventUserDto;
@@ -12,9 +13,9 @@ import java.util.List;
 public interface EventService {
     Event add(long userId, Event event);
 
-    Event publish(long eventId);
+    Event publish(long id, Event eventIn);
 
-    Event reject(long eventId);
+    Event reject(long id, Event eventIn);
 
     List<EventDto> getEventsAdm(Long[] usersId, String[] states, Long[] catId,
                                     LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size);
@@ -27,7 +28,7 @@ public interface EventService {
 
     List<EventDto> getByUser(long id, Integer from, Integer size);
 
-    Event update(long userId, Event event);
+    Event update(long userId, long eventId, Event event, StateAction stateAction);
 
     Event updateAdm(long id, Event event);
 

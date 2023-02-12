@@ -1,9 +1,15 @@
 package ru.practicum.exploreWithMe.controller.privat;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.exploreWithMe.model.Status;
 import ru.practicum.exploreWithMe.model.dto.RequestDto;
+import ru.practicum.exploreWithMe.model.dto.RequestsUpd;
+import ru.practicum.exploreWithMe.model.dto.RequestsUpdResult;
 import ru.practicum.exploreWithMe.model.mapper.RequestMapper;
 import ru.practicum.exploreWithMe.service.RequestService;
 
@@ -17,13 +23,16 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @Validated
+@Slf4j
 public class RequestController {
     private final RequestService requestService;
     private final RequestMapper requestMapper;
 
     @PostMapping("/users/{userId}/requests")
-    public RequestDto add(@PathVariable long userId, @RequestParam @Valid @NotNull long eventId) {
-        return requestMapper.toDto(requestService.add(userId, eventId));
+    public ResponseEntity<RequestDto> add(@PathVariable long userId, @RequestParam @Valid @NotNull long eventId) {
+        log.info("--==>>REQ_CTRL_before_add_request:userId=/{}/,eventId=/{}/", userId, eventId);
+        RequestDto result = requestMapper.toDto(requestService.add(userId, eventId));
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
     @PatchMapping("users/{userId}/requests/{requestId}/cancel")
@@ -49,15 +58,14 @@ public class RequestController {
                 .collect(Collectors.toList());
     }
 
-    @PatchMapping("/users/{userId}/events/{eventId}/requests/{reqId}/confirm")
-    public RequestDto confirm(@PathVariable long userId, @PathVariable long eventId,
-                              @PathVariable long reqId) {
-        return requestMapper.toDto(requestService.confirm(userId, eventId, reqId));
-    }
-
-    @PatchMapping("/users/{userId}/events/{eventId}/requests/{reqId}/reject")
-    public RequestDto reject(@PathVariable long userId, @PathVariable long eventId,
-                             @PathVariable long reqId) {
-        return requestMapper.toDto(requestService.reject(userId, eventId, reqId));
+    @PatchMapping("/users/{userId}/events/{eventId}/requests")
+    public RequestsUpdResult update(@PathVariable long userId, @PathVariable long eventId,
+                                    @RequestBody RequestsUpd requestsUpd) {
+        log.info("--==>>REQ_CTRL update requestUpd=/{}/", requestsUpd);
+        if (requestsUpd.getStatus().equals(Status.REJECTED)) {
+            return requestService.reject(userId, eventId, requestsUpd);
+        } else {
+            return requestService.confirm(userId, eventId, requestsUpd);
+        }
     }
 }
