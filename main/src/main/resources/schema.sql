@@ -1,4 +1,4 @@
-drop table if exists users, categories, events, events_compilations, requests, compilations, comments cascade ;
+--drop table if exists users, categories, events, events_compilations, requests, compilations, comments cascade ;
 
 CREATE TABLE IF NOT EXISTS users
 (

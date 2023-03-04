@@ -33,4 +33,25 @@ public class CommentController {
                 .map(commentMapper::toOutDto)
                 .collect(Collectors.toList());
     }
+
+    @GetMapping("/tst")
+    public String tst(){
+        String res = "<html><body><p id='p1'>xxx</p><button onclick='b1()'>GETDATA</button></body></html>";
+        res += "<script>\n" +
+                "function b1() {\n" +
+                "    var reqUrl = 'http://localhost:8080/comments/1';\n" +
+                "    var req = new XMLHttpRequest();\n" +
+                "    req.open('GET', reqUrl);\n" +
+                "    req.responseType = 'json';\n" +
+                "    req.send();\n" +
+                "    req.onload = function () {\n" +
+                "        var comment = req.response;\n" +
+                "        document.getElementById('p1').innerHTML = reqUrl + '<br/>text: ' + comment.text + \n" +
+                "    '<br/>date: ' + comment.created + '<br/>visible: ' + comment.visible;" +
+                "    }\n" +
+                "}\n" +
+                "</script>";
+        return res;
+    }
+
 }
